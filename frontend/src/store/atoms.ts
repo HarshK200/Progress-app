@@ -1,0 +1,9 @@
+import { atomWithStorage } from "jotai/utils";
+
+// HACK: this transitionAtom is temporary read this from file (also probably use jotai store for this?)
+export const transitionAtom = atomWithStorage<boolean>(
+  "isTransitionsEnabled",
+  false,
+);
+
+export const sidebarAtom = atomWithStorage<boolean>("isSidebarOpen", false);
