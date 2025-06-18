@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useSetAtom } from "jotai";
-import { sidebarAtom } from "@/store/atoms";
+import { sidebarAtom } from "@/store";
 import { useEffect } from "react";
 
 export function cn(...inputs: ClassValue[]) {

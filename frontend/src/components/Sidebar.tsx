@@ -1,4 +1,4 @@
-import { sidebarAtom, transitionAtom } from "@/store/atoms";
+import { sidebarAtom, transitionAtom } from "@/store";
 import { useAtom, useAtomValue } from "jotai";
 import { ChevronDown, ChevronUp, PanelLeft } from "lucide-react";
 import { useState } from "react";
@@ -10,7 +10,7 @@ export default function Sidebar() {
   return (
     <div className="min-h-screen flex select-none">
       {/* Toggle options */}
-      <div className="min-h-screen w-min border-r-[1px] border-r-border px-3 py-3">
+      <div className="bg-background z-10 min-h-screen w-min border-r-[1px] border-r-border px-3 py-3">
         <PanelLeft
           size={22}
           className="cursor-pointer"
@@ -20,7 +20,7 @@ export default function Sidebar() {
 
       {/* Re-tractable sidebar */}
       <aside
-        className={`px-3 py-3 flex flex-1 border-r-[1px] border-r-border ${transitionEnabled ? "transition-all" : ""} ${sidebarOpen ? "w-64 opacity-100" : "w-0 opacity-0"}`}
+        className={`bg-background h-full p-3 flex flex-1 border-r-[1px] border-r-border ${transitionEnabled ? "transition-all" : ""} ${sidebarOpen ? "w-64 opacity-100" : "px-0 m-0 w-0 translate-x-[-200px] opacity-0"}`}
       >
         <SidebarGroup name="Boards" />
       </aside>
