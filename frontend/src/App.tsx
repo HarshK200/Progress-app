@@ -12,7 +12,7 @@ function App() {
       <Sidebar />
 
       {/* TODO: use react router here i.e. <Routes></Routes>*/}
-      <BoardPage />
+      <BoardPage boardId="251ab92d-ccff-4e74-ae4e-619ebb3b1752" />
     </div>
   );
 }

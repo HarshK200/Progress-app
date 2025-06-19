@@ -1,15 +1,21 @@
 import { List } from "@/components/List";
-import { useBoardAtom } from "@/store";
+import { useDataStateValue } from "@/store";
 
-export default function BoardPage() {
-  const [boards] = useBoardAtom();
+interface BoardPageProps {
+  boardId: string;
+}
+
+export default function BoardPage({ boardId }: BoardPageProps) {
+  const dataState = useDataStateValue();
+
+  const lists = Object.values(dataState.lists).filter(
+    (list) => list.BoardId === boardId,
+  );
 
   return (
     <main className="w-full h-full flex m-4 gap-3">
-      {boards[0].lists.map((list) => {
-        const listCards = boards[0].listCards.filter(
-          (card) => card.listId === list.id,
-        );
+      {lists.map((list) => {
+        const listCards = list.CardIds.map((cardId) => dataState.cards[cardId]);
 
         return <List list={list} cards={listCards} />;
       })}

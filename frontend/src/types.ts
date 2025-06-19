@@ -1,12 +1,17 @@
+export type DataState = {
+  boards: Record<string, BoardT>;
+  lists: Record<string, ListT>;
+  cards: Record<string, ListCardT>;
+};
+
 export type BoardT = {
   id: string;
   name: string;
-  lists: ListT[];
-  listCards: ListCardT[];
 };
 
 export type ListT = {
-  id: number;
+  id: string;
+  BoardId: string;
   title: string;
   className?: string;
   CardIds: string[];
@@ -14,7 +19,8 @@ export type ListT = {
 
 export type ListCardT = {
   id: string;
-  listId: number;
+  BoardId: string;
+  listId: string;
   title: string;
   isDone: boolean;
 };
