@@ -21,7 +21,7 @@ export function List({ list, cards }: ListProps) {
         <EditableText
           title={list.title}
           outlineOnDoubleClick
-          className={`font-bold mx-2`}
+          className={`font-bold mx-4`}
         />
       </div>
 
@@ -45,7 +45,7 @@ export function List({ list, cards }: ListProps) {
 
 function AddNewCard() {
   return (
-    <button className="flex px-2 py-1 rounded-md gap-2 items-center text-white hover:bg-opacity-30 hover:bg-foreground transition-all">
+    <button className="flex px-2 py-1 rounded-md gap-2 items-center hover:bg-background/50 transition-all">
       <Plus width={22} />
       <span>New</span>
     </button>

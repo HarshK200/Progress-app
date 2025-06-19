@@ -22,7 +22,7 @@ export function ListCard({ card }: { card: ListCardT }) {
 
   return (
     <div
-      className="flex items-center w-full rounded-md bg-black"
+      className="flex items-center w-full rounded-md bg-background"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
