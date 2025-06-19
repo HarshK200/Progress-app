@@ -7,8 +7,7 @@ function App() {
   mountUnmoutKeybinds();
 
   return (
-    // TODO: wrap in jotai state Provider
-    <div className="dark min-h-screen bg-background text-foreground flex">
+    <div className="dark min-w-full min-h-screen bg-background text-foreground flex">
       <Sidebar />
 
       {/* TODO: use react router here i.e. <Routes></Routes>*/}

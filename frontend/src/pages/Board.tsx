@@ -10,7 +10,7 @@ export default function BoardPage({ boardId }: BoardPageProps) {
   const board = dataState.boards[boardId];
 
   return (
-    <main className="w-full h-full flex m-4 gap-3">
+    <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-scroll">
       {board.ListIds.map((listId) => {
         const list = dataState.lists[listId];
         const listCards = list.CardIds.map((cardId) => dataState.cards[cardId]);

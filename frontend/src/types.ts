@@ -14,6 +14,7 @@ export type ListT = {
   id: string;
   title: string;
   className?: string;
+  coverColor?: string;
   BoardId: string;
   CardIds: string[];
 };

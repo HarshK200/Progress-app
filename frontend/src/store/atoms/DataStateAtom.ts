@@ -15,14 +15,12 @@ const DATA_STATE: DataState = {
       id: "1",
       BoardId: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       title: "Todo",
-      className: "bg-[#45475a]",
       CardIds: ["564799fc-798a-4994-b341-97ba70e3724a"],
     },
     "2": {
       id: "2",
       BoardId: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       title: "Doing",
-      className: "bg-[#f9e2af]",
       CardIds: [
         "171883c6-621b-4fcc-b01b-0586dc2b0250",
         "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
@@ -33,7 +31,6 @@ const DATA_STATE: DataState = {
       id: "3",
       BoardId: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       title: "Done",
-      className: "bg-[#a6e3a1]",
       CardIds: [
         "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
         "62e000f2-16cc-43c4-b186-5cd714142f1e",
@@ -43,7 +40,6 @@ const DATA_STATE: DataState = {
       id: "4",
       BoardId: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       title: "BackBurner",
-      className: "bg-[#89b4fa]",
       CardIds: [],
     },
   },

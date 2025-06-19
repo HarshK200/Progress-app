@@ -19,7 +19,7 @@ export function EditableText({
   const [isEditing, setIsEditing] = useState(false);
   const textAreaRef = useRef<null | any>(null);
 
-  const baseClass = `resize-none select-none bg-inherit`;
+  const baseClass = `resize-none select-none border-none bg-inherit`;
   const outlineDblClass = `${!isEditing && outlineOnDoubleClick ? "outline-none" : ""}`;
   const outlineSingleClass = `${outlineOnClick ? "" : !outlineOnDoubleClick && "outline-none"}`;
   const finalClass = cn(
