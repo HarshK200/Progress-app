@@ -7,20 +7,21 @@ export type DataState = {
 export type BoardT = {
   id: string;
   name: string;
+  ListIds: string[];
 };
 
 export type ListT = {
   id: string;
-  BoardId: string;
   title: string;
   className?: string;
+  BoardId: string;
   CardIds: string[];
 };
 
 export type ListCardT = {
   id: string;
-  BoardId: string;
-  listId: string;
   title: string;
   isDone: boolean;
+  BoardId: string;
+  ListId: string;
 };

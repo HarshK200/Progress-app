@@ -7,17 +7,15 @@ interface BoardPageProps {
 
 export default function BoardPage({ boardId }: BoardPageProps) {
   const dataState = useDataStateValue();
-
-  const lists = Object.values(dataState.lists).filter(
-    (list) => list.BoardId === boardId,
-  );
+  const board = dataState.boards[boardId];
 
   return (
     <main className="w-full h-full flex m-4 gap-3">
-      {lists.map((list) => {
+      {board.ListIds.map((listId) => {
+        const list = dataState.lists[listId];
         const listCards = list.CardIds.map((cardId) => dataState.cards[cardId]);
 
-        return <List list={list} cards={listCards} />;
+        return <List key={list.id} list={list} cards={listCards} />;
       })}
     </main>
   );
