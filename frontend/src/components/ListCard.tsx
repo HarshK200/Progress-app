@@ -1,9 +1,24 @@
 import { useState } from "react";
 import { EditableText } from "@/components/ui/EditableInput";
 import { ListCardT } from "@/types";
+import { useSetDataState } from "@/store";
 
 export function ListCard({ card }: { card: ListCardT }) {
   const [isHovering, setIsHovering] = useState(false);
+  const setDataState = useSetDataState();
+
+  function toggleCardIsDone() {
+    setDataState((prev) => ({
+      ...prev,
+      cards: {
+        ...prev.cards,
+        [card.id]: {
+          ...prev.cards[card.id],
+          isDone: !prev.cards[card.id].isDone,
+        },
+      },
+    }));
+  }
 
   return (
     <div
@@ -17,9 +32,7 @@ export function ListCard({ card }: { card: ListCardT }) {
       <input
         type="checkbox"
         checked={card.isDone}
-        onChange={() => {
-          // TODO: implement this by writing a dervied state atom thingi
-        }}
+        onClick={toggleCardIsDone}
         className={`px-4 mx-2 transition-all duration-500 ${isHovering ? "" : "mx-0 opacity-0"}`}
       />
 

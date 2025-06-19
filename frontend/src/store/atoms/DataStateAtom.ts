@@ -9,16 +9,14 @@ const DATA_STATE: DataState = {
       ListIds: ["1", "2", "3", "4"],
     },
   },
+
   lists: {
     "1": {
       id: "1",
       BoardId: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       title: "Todo",
       className: "bg-[#45475a]",
-      CardIds: [
-        "171883c6-621b-4fcc-b01b-0586dc2b0250",
-        "564799fc-798a-4994-b341-97ba70e3724a",
-      ],
+      CardIds: ["564799fc-798a-4994-b341-97ba70e3724a"],
     },
     "2": {
       id: "2",
@@ -26,6 +24,7 @@ const DATA_STATE: DataState = {
       title: "Doing",
       className: "bg-[#f9e2af]",
       CardIds: [
+        "171883c6-621b-4fcc-b01b-0586dc2b0250",
         "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
         "6969e000f2-16cc-43c4-b186-5cd714142f1e",
       ],
@@ -48,6 +47,7 @@ const DATA_STATE: DataState = {
       CardIds: [],
     },
   },
+
   cards: {
     "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2": {
       id: "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
@@ -59,7 +59,7 @@ const DATA_STATE: DataState = {
     "171883c6-621b-4fcc-b01b-0586dc2b0250": {
       id: "171883c6-621b-4fcc-b01b-0586dc2b0250",
       BoardId: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      ListId: "1",
+      ListId: "2",
       title: "Button to add a new card",
       isDone: false,
     },

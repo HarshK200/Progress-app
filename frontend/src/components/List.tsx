@@ -9,7 +9,8 @@ interface ListProps {
 }
 
 export function List({ list, cards }: ListProps) {
-  // HACK: this is just for testing. Change this color in production. Also move this to tailwindcss
+  // HACK: this is just for testing. This should be stored in the List informations like
+  // as key listColor which user can set
   const LIST_BG_COLOR = "bg-border";
 
   return (
