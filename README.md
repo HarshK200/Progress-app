@@ -4,7 +4,11 @@ TODO:
 
 [x] - Basic UI setup
 [x] - Figure out the Data Structure for Serialization
-[x] - FIX THE hover:bg-opacity-30 in List.tsx! it doesn't work
+[x] - FIX: the hover:bg-opacity-30 in List.tsx! it doesn't work
+
+[ ] - FIX: all the stupid re-renders that are happening becuase of you using a single
+DataState object instead use jotai AtomFamily to break that big-fat-chonky state down
+into atoms its own atoms.
 
 [ ] - Add new ListCard button
 [ ] - Add new List button

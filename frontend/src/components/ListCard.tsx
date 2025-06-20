@@ -32,7 +32,7 @@ export function ListCard({ card }: { card: ListCardT }) {
       <input
         type="checkbox"
         checked={card.isDone}
-        onClick={toggleCardIsDone}
+        onChange={toggleCardIsDone}
         className={`px-4 mx-2 transition-all duration-500 ${isHovering ? "" : "mx-0 opacity-0"}`}
       />
 

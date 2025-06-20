@@ -18,6 +18,7 @@ export type ListT = {
   BoardId: string;
   CardIds: string[];
 };
+// TODO make a Linked-List class and use it
 
 export type ListCardT = {
   id: string;
