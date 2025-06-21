@@ -10,6 +10,7 @@ TODO:
 DataState object instead use jotai AtomFamily to break that big-fat-chonky state down
 into atoms its own atoms.
 
+[ ] - Load board data from disk in golang and use a function that pass that to frontend.
 [ ] - Add new ListCard button
 [ ] - Add new List button
 [ ] - Setup routing using the sidebar with React-router

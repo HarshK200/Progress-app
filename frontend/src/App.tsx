@@ -1,10 +1,23 @@
 import Sidebar from "./components/Sidebar";
 import { mountUnmoutKeybinds } from "./lib/utils";
 import BoardPage from "./pages/Board";
+import { Greet } from "../wailsjs/go/main/App";
+import { useEffect } from "react";
+
+function doGreeting(name: string) {
+  Greet(name).then((result) => {
+    // Do something with result
+    console.log(result);
+  });
+}
 
 function App() {
-  // Keybinds mounting on component load an unmount on unload
+  // handles Keybinds mounting on component load, and unmount on unload.
   mountUnmoutKeybinds();
+
+  useEffect(() => {
+    doGreeting("Ballz");
+  }, []);
 
   return (
     <div className="dark min-w-full min-h-screen bg-background text-foreground flex">

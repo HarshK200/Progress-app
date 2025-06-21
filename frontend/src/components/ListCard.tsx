@@ -28,7 +28,7 @@ export function ListCard({ card }: { card: ListCardT }) {
     >
       {/* TODO: add custom checkbox componenet */}
 
-      {/* Checkbox */}
+{/* Checkbox */}
       <input
         type="checkbox"
         checked={card.isDone}

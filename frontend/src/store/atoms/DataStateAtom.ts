@@ -1,7 +1,7 @@
 import { DataState } from "@/types";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 
-const DATA_STATE: DataState = {
+const INITIAL_DATA_STATE: DataState = {
   boards: {
     "251ab92d-ccff-4e74-ae4e-619ebb3b1752": {
       id: "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
@@ -97,7 +97,7 @@ const DATA_STATE: DataState = {
   },
 };
 
-const dataStateAtom = atom<DataState>(DATA_STATE);
+const dataStateAtom = atom<DataState>(INITIAL_DATA_STATE);
 
 export function useDataStateAtom() {
   return useAtom(dataStateAtom);
