@@ -1,0 +1,16 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        background: "rgba(var(--background), <alpha-value>)",
+        foreground: "rgba(var(--foreground), <alpha-value>)",
+        border: "rgba(var(--border), <alpha-value>)",
+        "background-secondary":
+          "rgba(var(--background-secondary), <alpha-value>)",
+      },
+    },
+  },
+  plugins: [],
+};
