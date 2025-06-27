@@ -5,5 +5,3 @@ export const transitionAtom = atomWithStorage<boolean>(
   "isTransitionsEnabled",
   false,
 );
-
-export const sidebarAtom = atomWithStorage<boolean>("isSidebarOpen", false);

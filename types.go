@@ -2,25 +2,25 @@ package main
 
 // Kanban user DataTypes
 type Board struct {
-	id      string
-	name    string
-	ListIds []string
+	Id      string   `json:"id"`
+	Name    string   `json:"name"`
+	ListIds []string `json:"list_ids"`
 }
 
 type List struct {
-	id        string
-	title     string
-	className string
-	BoardId   string
-	CardIds   []string
+	Id        string   `json:"id"`
+	Title     string   `json:"title"`
+	ClassName string   `json:"classname"`
+	BoardId   string   `json:"board_id"`
+	CardIds   []string `json:"card_ids"`
 }
 
 type ListCard struct {
-	id      string
-	title   string
-	isDone  bool
-	BoardId string
-	ListId  string
+	Id      string `json:"id"`
+	Title   string `json:"title"`
+	IsDone  bool   `json:"is_done"`
+	BoardId string `json:"board_id"`
+	ListId  string `json:"list_id"`
 }
 
 type UserData struct {

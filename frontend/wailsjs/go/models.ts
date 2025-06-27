@@ -1,7 +1,9 @@
 export namespace main {
 	
 	export class Board {
-	    ListIds: string[];
+	    id: string;
+	    name: string;
+	    list_ids: string[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Board(source);
@@ -9,12 +11,17 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ListIds = source["ListIds"];
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.list_ids = source["list_ids"];
 	    }
 	}
 	export class ListCard {
-	    BoardId: string;
-	    ListId: string;
+	    id: string;
+	    title: string;
+	    is_done: boolean;
+	    board_id: string;
+	    list_id: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ListCard(source);
@@ -22,13 +29,19 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.BoardId = source["BoardId"];
-	        this.ListId = source["ListId"];
+	        this.id = source["id"];
+	        this.title = source["title"];
+	        this.is_done = source["is_done"];
+	        this.board_id = source["board_id"];
+	        this.list_id = source["list_id"];
 	    }
 	}
 	export class List {
-	    BoardId: string;
-	    CardIds: string[];
+	    id: string;
+	    title: string;
+	    classname: string;
+	    board_id: string;
+	    card_ids: string[];
 	
 	    static createFrom(source: any = {}) {
 	        return new List(source);
@@ -36,8 +49,11 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.BoardId = source["BoardId"];
-	        this.CardIds = source["CardIds"];
+	        this.id = source["id"];
+	        this.title = source["title"];
+	        this.classname = source["classname"];
+	        this.board_id = source["board_id"];
+	        this.card_ids = source["card_ids"];
 	    }
 	}
 	export class UserData {

@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 )
@@ -36,6 +38,14 @@ func (a *App) GetUserData() GetUserDataResponse {
 	err := ReadJsonFromFile("./mock-data.json", userData)
 	if err != nil {
 		log.Printf("Error in GetUserData():\n%+v\n", err)
+
+		if errors.Is(err, io.EOF) {
+			return GetUserDataResponse{
+				Status:     "User data file not found",
+				StatusCode: http.StatusNotFound,
+				Data:       UserData{},
+			}
+		}
 
 		return GetUserDataResponse{
 			Status:     "error getting user data",

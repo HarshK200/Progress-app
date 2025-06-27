@@ -1,55 +1,96 @@
 {
   "boards": {
-    "board1": {
-      "ListIds": [
-        "list1",
-        "list2",
-        "list3"
-      ]
+    "251ab92d-ccff-4e74-ae4e-619ebb3b1752": {
+      "id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "name": "Programming board",
+      "list_ids": ["1", "2", "3", "4"]
     }
   },
+
   "lists": {
-    "list1": {
-      "BoardId": "board1",
-      "CardIds": [
-        "card1",
-        "card2"
+    "1": {
+      "id": "1",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "title": "Todo",
+      "card_ids": ["564799fc-798a-4994-b341-97ba70e3724a"]
+    },
+    "2": {
+      "id": "2",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "title": "Doing",
+      "card_ids": [
+        "171883c6-621b-4fcc-b01b-0586dc2b0250",
+        "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
+        "6969e000f2-16cc-43c4-b186-5cd714142f1e"
       ]
     },
-    "list2": {
-      "BoardId": "board1",
-      "CardIds": [
-        "card3",
-        "card4"
+    "3": {
+      "id": "3",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "title": "Done",
+      "card_ids": [
+        "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
+        "62e000f2-16cc-43c4-b186-5cd714142f1e"
       ]
     },
-    "list3": {
-      "BoardId": "board1",
-      "CardIds": [
-        "card5"
-      ]
+    "4": {
+      "id": "4",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "title": "BackBurner",
+      "card_ids": []
     }
   },
+
   "list_cards": {
-    "card1": {
-      "BoardId": "board1",
-      "ListId": "list1"
+    "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2": {
+      "id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "3",
+      "title": "List component",
+      "is_done": true
     },
-    "card2": {
-      "BoardId": "board1",
-      "ListId": "list1"
+    "171883c6-621b-4fcc-b01b-0586dc2b0250": {
+      "id": "171883c6-621b-4fcc-b01b-0586dc2b0250",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "2",
+      "title": "Button to add a new card",
+      "is_done": false
     },
-    "card3": {
-      "BoardId": "board1",
-      "ListId": "list2"
+    "564799fc-798a-4994-b341-97ba70e3724a": {
+      "id": "564799fc-798a-4994-b341-97ba70e3724a",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "1",
+      "title": "Custom checkbox",
+      "is_done": false
     },
-    "card4": {
-      "BoardId": "board1",
-      "ListId": "list2"
+    "19e300f2-16cc-43c4-b186-5cd714142f1e": {
+      "id": "19e300f2-16cc-43c4-b186-5cd714142f1e",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "1",
+      "title": "Darg and drop functionality",
+      "is_done": false
     },
-    "card5": {
-      "BoardId": "board1",
-      "ListId": "list3"
+    "62e000f2-16cc-43c4-b186-5cd714142f1e": {
+      "id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "3",
+      "title": "Figure out the data structure for serialization",
+      "is_done": true
+    },
+    "60kw20dk2-16cc-43c4-b186-5cd714142f1e": {
+      "id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "2",
+      "title": "Write the board state to file and read it to state",
+      "is_done": false
+    },
+    "6969e000f2-16cc-43c4-b186-5cd714142f1e": {
+      "id": "6969e000f2-16cc-43c4-b186-5cd714142f1e",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "2",
+      "title": "Install react-router and setup the sidebar",
+      "is_done": false
     }
   }
 }
+

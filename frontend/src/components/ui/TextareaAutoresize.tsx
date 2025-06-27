@@ -29,11 +29,16 @@ export function TextareaAutoresize({
     className,
   );
 
-  function handleEscKeyDown(e: KeyboardEvent) {
+  function handleKeyDown(e: KeyboardEvent) {
     if (e.key === "Escape") {
       console.log("Escape key pressed while editing exiting editing mode");
       setIsEditing(false);
-      window.removeEventListener("keydown", handleEscKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+
+    if (e.key === "Enter") {
+      setIsEditing(false);
+      window.removeEventListener("keydown", handleKeyDown);
     }
   }
 
@@ -46,7 +51,7 @@ export function TextareaAutoresize({
       readOnly={!isEditing}
       onDoubleClick={() => {
         setIsEditing(true);
-        window.addEventListener("keydown", handleEscKeyDown);
+        window.addEventListener("keydown", handleKeyDown);
         textAreaRef.current.select();
       }}
       onBlur={() => {

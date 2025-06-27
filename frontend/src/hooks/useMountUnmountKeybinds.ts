@@ -1,12 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { useSetAtom } from "jotai";
 import { sidebarAtom } from "@/store";
+import { useSetAtom } from "jotai";
 import { useEffect } from "react";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 export function useMountUnmountKeybinds() {
   const keybindController = new AbortController();
