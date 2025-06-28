@@ -1,30 +1,28 @@
 import { List } from "@/components/List";
-import { useDataStateValue } from "@/store";
+import { useBoardsValue } from "@/store";
 
 interface BoardPageProps {
-  boardId: string;
+  board_id: string;
 }
 
-export default function BoardPage({ boardId }: BoardPageProps) {
-  const dataState = useDataStateValue();
+const BoardPage = ({ board_id }: BoardPageProps) => {
+  const boards = useBoardsValue();
 
-  if (!dataState) {
+  if (!boards) {
     return (
-      <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto"></main>
+      <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto">
+        Loading...
+      </main>
     );
   }
 
-  const board = dataState.boards[boardId];
   return (
     <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto">
-      {board.list_ids.map((list_id) => {
-        const list = dataState.lists[list_id];
-        const listCards = list.card_ids.map(
-          (card_id) => dataState.list_cards[card_id],
-        );
-
-        return <List key={list.id} list={list} cards={listCards} />;
+      {boards[board_id].list_ids.map((list_id) => {
+        return <List key={list_id} list_id={list_id} />;
       })}
     </main>
   );
-}
+};
+
+export default BoardPage;

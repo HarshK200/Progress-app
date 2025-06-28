@@ -1,9 +1,9 @@
 import { sidebarAtom } from "@/store";
 import { useSetAtom } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function useMountUnmountKeybinds() {
-  const keybindController = new AbortController();
+  const keybindController = useRef<AbortController | null>(null);
   const setSideBarOpen = useSetAtom(sidebarAtom);
 
   // Keymaps ---  TODO: load these from file
@@ -14,18 +14,14 @@ export function useMountUnmountKeybinds() {
     }
   }
 
-  function bindKeymaps() {
-    window.addEventListener("keydown", handleKeyDown, {
-      signal: keybindController.signal,
-    });
-  }
-  function unbindKeymaps() {
-    return keybindController.abort();
-  }
-
   useEffect(() => {
-    bindKeymaps();
+    keybindController.current = new AbortController();
 
-    return unbindKeymaps();
+    // NOTE: Bind Keymaps
+    window.addEventListener("keydown", handleKeyDown, {
+      signal: keybindController.current.signal,
+    });
+
+    return () => keybindController.current?.abort();
   }, []);
 }

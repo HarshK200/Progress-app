@@ -1,27 +1,25 @@
-import { memo } from "react";
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
-import { useSetDataState } from "@/store";
-import { main } from "@wailsjs/go/models";
+import { useListCard } from "@/store";
 
-export const ListCard = memo(({ card }: { card: main.ListCard }) => {
-  const setDataState = useSetDataState();
+interface ListCardProps {
+  listcard_id: string;
+}
+
+export const ListCard = ({ listcard_id }: ListCardProps) => {
+  const [card, setCard] = useListCard(listcard_id);
+  if (!card) {
+    return (
+      <div className="flex items-center w-full rounded-md bg-background">
+        Loading...
+      </div>
+    );
+  }
 
   function toggleCardIsDone(e: React.ChangeEvent<HTMLInputElement>) {
-    setDataState((prev) => {
-      if (!prev) {
-        return undefined;
-      }
-
-      const newUserData = new main.UserData();
-      newUserData.boards = prev.boards;
-      newUserData.lists = prev.lists;
-      newUserData.list_cards = {
-        ...prev.list_cards,
-        [card.id]: { ...prev.list_cards[card.id], is_done: e.target.checked }, // INSERTING NEW DUMMY CARD
-      };
-
-      return newUserData;
-    });
+    if (!card) {
+      return;
+    }
+    setCard({ ...card, is_done: e.target.checked });
   }
 
   return (
@@ -44,4 +42,4 @@ export const ListCard = memo(({ card }: { card: main.ListCard }) => {
       />
     </div>
   );
-});
+};

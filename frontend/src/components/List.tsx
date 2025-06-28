@@ -3,14 +3,20 @@ import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
 import { Plus } from "lucide-react";
 import { main } from "@wailsjs/go/models";
-import { useSetDataState } from "@/store";
+import { useList, useSetListCards } from "@/store";
+import { memo } from "react";
 
 interface ListProps {
-  list: main.List;
-  cards: main.ListCard[];
+  list_id: string;
 }
 
-export const List = ({ list, cards }: ListProps) => {
+export const List = memo(({ list_id }: ListProps) => {
+  const [list] = useList(list_id);
+  if (!list) {
+    return (
+      <div className="flex flex-col w-[260px] text-foreground">Loding...</div>
+    );
+  }
   return (
     <div className="flex flex-col w-[260px] text-foreground">
       {/* List Title */}
@@ -30,8 +36,8 @@ export const List = ({ list, cards }: ListProps) => {
         )}
       >
         {/* List Cards */}
-        {cards.map((card) => {
-          return <ListCard key={card.id} card={card} />;
+        {list.card_ids.map((card_id) => {
+          return <ListCard key={card_id} listcard_id={card_id} />;
         })}
 
         {/* Add List Card Button*/}
@@ -39,10 +45,11 @@ export const List = ({ list, cards }: ListProps) => {
       </div>
     </div>
   );
-};
+});
 
-function AddNewCard({ list_id }: { list_id: string }) {
-  const setDataState = useSetDataState();
+const AddNewCard = ({ list_id }: { list_id: string }) => {
+  const [list, setList] = useList(list_id);
+  const setListCards = useSetListCards();
 
   function addNewCard() {
     const DummyCardData: main.ListCard = {
@@ -53,26 +60,14 @@ function AddNewCard({ list_id }: { list_id: string }) {
       list_id: list_id,
     };
 
-    setDataState((prev) => {
+    // NOTE: Add the new card_id to the current list
+    setList({ ...list!, card_ids: [...list!.card_ids, DummyCardData.id] });
+
+    // NOTE: Add the card to listCards state
+    setListCards((prev) => {
       if (!prev) return undefined;
 
-      const newUserData = new main.UserData();
-      newUserData.boards = prev.boards;
-      newUserData.lists = {
-        ...prev.lists,
-        [list_id]: {
-          ...prev.lists[list_id],
-          card_ids: [...prev.lists[list_id].card_ids, DummyCardData.id],
-        },
-      };
-      newUserData.list_cards = {
-        ...prev.list_cards,
-        [DummyCardData.id]: DummyCardData, // INSERTING NEW DUMMY CARD
-      };
-      console.log("prev: ", prev);
-      console.log("new: ", newUserData);
-
-      return newUserData;
+      return { ...prev, [DummyCardData.id]: DummyCardData };
     });
   }
 
@@ -85,4 +80,4 @@ function AddNewCard({ list_id }: { list_id: string }) {
       <span>New</span>
     </button>
   );
-}
+};

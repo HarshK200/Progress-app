@@ -1,7 +1,18 @@
 import { GetUserData } from "@wailsjs/go/main/App";
-import { useSetDataState } from "@/store";
+import { boardsAtom, listsAtom, listCardsAtom } from "@/store";
+import { useSetAtom } from "jotai";
+import { useEffect } from "react";
 
 export function useHydrateUserDataState() {
-  const setDataState = useSetDataState();
-  GetUserData().then((data) => setDataState(data.user_data));
+  const setBoards = useSetAtom(boardsAtom);
+  const setLists = useSetAtom(listsAtom);
+  const setListCards = useSetAtom(listCardsAtom);
+
+  useEffect(() => {
+    GetUserData().then((data) => {
+      setBoards(data.user_data.boards);
+      setLists(data.user_data.lists);
+      setListCards(data.user_data.list_cards);
+    });
+  }, []);
 }
