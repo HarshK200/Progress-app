@@ -8,10 +8,11 @@ TODO:
 [x] - BIG BUG FIX: Use the official wails template, cause the community template doesn't work 😭.
 [x] - FIX: Break down state
 [x] - FIX: Optimize re-renders (using atomFamily)
+[x] - Load board data from disk in golang and use a function that pass that to frontend.
+[x] - Add state logic to Sidebar (Setup boards routing using the sidebar using state)
 
-[ ] - Load board data from disk in golang and use a function that pass that to frontend.
-[ ] - Add new ListCard button
-[ ] - Add new List button
-[ ] - Setup routing using the sidebar with React-router
-[ ] - Implement drag and drop functionality like trello
-[ ] - Implement the Ctrl+p quick search/command menu
+[ ] - Implement "Add new ListCard button"
+[ ] - Implement "Add new List button"
+[ ] - Implement "Add new Board button" (in the Boards Sidebar group itself)
+[ ] - Implement drag and drop functionality like trello (use pragmatic dnd)
+[ ] - Implement the Ctrl+p quick search/command menu (i'm excited for this one)

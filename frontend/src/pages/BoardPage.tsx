@@ -15,6 +15,13 @@ const BoardPage = ({ board_id }: BoardPageProps) => {
       </main>
     );
   }
+  if (!boards[board_id]) {
+    return (
+      <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto">
+        Invalid board Id
+      </main>
+    );
+  }
 
   return (
     <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto">
