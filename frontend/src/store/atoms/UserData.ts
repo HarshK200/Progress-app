@@ -6,11 +6,30 @@ import { atomFamily } from "jotai/utils";
 export const boardsAtom = atom<Record<string, main.Board> | undefined>(
   undefined,
 );
+// Boards Atom Family
+export const BoardAtomFamily = atomFamily((id: string) => {
+  return atom(
+    (get) => {
+      const boards = get(boardsAtom);
+      return boards?.[id];
+    },
+    (get, set, updatedBoard: main.Board) => {
+      const boards = get(boardsAtom);
+      if (!boards) return;
+      set(boardsAtom, { ...boards, [id]: updatedBoard });
+    },
+  );
+});
+// ----------- For Hydration && updating ------------
 export function useBoardsValue() {
   return useAtomValue(boardsAtom);
 }
 export function useSetBoards() {
   return useSetAtom(boardsAtom);
+}
+// -------- For per-baord access ---------
+export function useBoard(id: string) {
+  return useAtom(BoardAtomFamily(id));
 }
 
 // Lists Atom
@@ -30,7 +49,7 @@ export const listAtomFamily = atomFamily((id: string) => {
   );
 });
 
-// ----------- For Hydration ------------
+// ----------- For Hydration && updating ------------
 export function useListsValue() {
   return useAtomValue(listsAtom);
 }
@@ -41,8 +60,6 @@ export function useSetLists() {
 export function useList(id: string) {
   return useAtom(listAtomFamily(id));
 }
-
-
 
 // Listcard Atom
 export const listCardsAtom = atom<Record<string, main.ListCard> | undefined>(
@@ -63,7 +80,7 @@ export const listCardAtomFamily = atomFamily((id: string) => {
   );
 });
 
-// ----------- For Hydration ------------
+// ----------- For Hydration && updating ------------
 export function useListCardsValue() {
   return useAtomValue(listCardsAtom);
 }

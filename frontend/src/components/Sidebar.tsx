@@ -7,8 +7,10 @@ import {
 import { ChevronDown, ChevronUp, PanelLeft } from "lucide-react";
 import { useState } from "react";
 import { main } from "@wailsjs/go/models";
+import { cn } from "@/lib/utils";
+import { AddNewBoard } from "./AddNewBoard";
 
-export default function Sidebar() {
+const Sidebar = () => {
   const [sidebarOpen, setSideBarOpen] = useSidebarAtom();
   const [transitionEnabled] = useTransitionAtom();
   const boards = useBoardsValue();
@@ -33,26 +35,28 @@ export default function Sidebar() {
       <aside
         className={`bg-background h-full p-3 flex flex-1 border-r-[1px] border-r-border ${transitionEnabled ? "transition-all" : ""} ${sidebarOpen ? "w-64 opacity-100" : "px-0 m-0 w-0 translate-x-[-200px] opacity-0"}`}
       >
-        {/* NOTE: Baords-Group */}
-        <SidebarGroup name="Boards">
+        {/* Boards Group */}
+        <SidebarGroup name="Boards" classname="relative">
           {Object.values(boards).map((board) => (
             <SidebarBoardGroupItem key={board.id} board={board} />
           ))}
+          <AddNewBoard />
         </SidebarGroup>
       </aside>
     </div>
   );
-}
+};
 
 interface SidebarGroupProps {
   name: string;
+  classname?: string;
   children?: React.ReactNode;
 }
-function SidebarGroup({ name, children }: SidebarGroupProps) {
+const SidebarGroup = ({ name, children, classname }: SidebarGroupProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full h-fit", classname)}>
       {/* Group-name */}
       <div
         className="flex items-center gap-2 py-1 px-1 cursor-pointer hover:bg-background-secondary rounded-md"
@@ -62,7 +66,7 @@ function SidebarGroup({ name, children }: SidebarGroupProps) {
         <h1>{name}</h1>
       </div>
 
-      {/* Board Childrens */}
+      {/* Group Childrens */}
       <ul
         className={`mx-3 flex flex-col gap-1 border-l-[1px] border-l-border ${!isOpen ? "hidden" : ""}`}
       >
@@ -70,13 +74,13 @@ function SidebarGroup({ name, children }: SidebarGroupProps) {
       </ul>
     </div>
   );
-}
+};
 
 interface SidebarBoardGroupItemProps {
   board: main.Board;
 }
 // TODO: turn these into buttons that on click changes boardOpenStateAtom
-function SidebarBoardGroupItem({ board }: SidebarBoardGroupItemProps) {
+const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   const [boardOpenId, setBoardOpenId] = useBoardOpenId();
   const isCurrentBoardOpen = board.id === boardOpenId;
 
@@ -92,4 +96,6 @@ function SidebarBoardGroupItem({ board }: SidebarBoardGroupItemProps) {
       {board.name}
     </li>
   );
-}
+};
+
+export default Sidebar;

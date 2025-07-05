@@ -13,11 +13,14 @@ export const List = memo(({ list_id }: ListProps) => {
   const [list] = useList(list_id);
   if (!list) {
     return (
-      <div className="flex flex-col w-[270px] text-foreground">Loding...</div>
+      <div className="flex flex-col min-w-[270px] max-w-[270px] text-foreground">
+        Loding...
+      </div>
     );
   }
+
   return (
-    <div className="flex flex-col w-[270px] text-foreground">
+    <div className="flex flex-col min-w-[270px] max-w-[270px] text-foreground">
       {/* List Title */}
       <div className={`bg-background-secondary pt-2 rounded-t-md`}>
         <TextareaAutoresize

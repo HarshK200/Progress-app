@@ -9,6 +9,8 @@ export const AddNewCard = ({ list_id }: { list_id: string }) => {
   const boardOpenId = useBoardOpenIdValue();
 
   function addNewCard() {
+    if (!list) return;
+
     const NewCardData: main.ListCard = {
       id: uuidv4(),
       title: "New Card",
@@ -18,7 +20,7 @@ export const AddNewCard = ({ list_id }: { list_id: string }) => {
     };
 
     // NOTE: Add the new card_id to the current list
-    setList({ ...list!, card_ids: [...list!.card_ids, NewCardData.id] });
+    setList({ ...list, card_ids: [...list.card_ids, NewCardData.id] });
 
     // NOTE: Add the card to listCards state
     setListCards((prev) => {
@@ -34,7 +36,7 @@ export const AddNewCard = ({ list_id }: { list_id: string }) => {
       onClick={addNewCard}
     >
       <Plus width={22} />
-      <span>New</span>
+      <span>New Card</span>
     </button>
   );
 };
