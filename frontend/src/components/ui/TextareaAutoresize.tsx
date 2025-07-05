@@ -18,6 +18,7 @@ export function TextareaAutoresize({
   const [inputVal, setInputVal] = useState(title);
   const [isEditing, setIsEditing] = useState(false);
   const textAreaRef = useRef<null | any>(null);
+  let shiftIsPressed = false;
 
   const baseClass = `resize-none select-none border-none bg-inherit`;
   const outlineDblClass = `${!isEditing && outlineOnDoubleClick ? "outline-none" : ""}`;
@@ -29,16 +30,33 @@ export function TextareaAutoresize({
     className,
   );
 
+  function handleKeyUp(e: KeyboardEvent) {
+    if (e.key === "Shift") {
+      console.log("shift keyup: ", shiftIsPressed);
+      shiftIsPressed = false;
+    }
+  }
+
   function handleKeyDown(e: KeyboardEvent) {
     if (e.key === "Escape") {
-      console.log("Escape key pressed while editing exiting editing mode");
       setIsEditing(false);
+      shiftIsPressed = false;
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      return;
     }
 
-    if (e.key === "Enter") {
+    if (e.key === "Shift") {
+      console.log("shift keydown: ", shiftIsPressed);
+      shiftIsPressed = true;
+      return;
+    }
+
+    if (e.key === "Enter" && !shiftIsPressed) {
       setIsEditing(false);
+      shiftIsPressed = false;
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     }
   }
 
@@ -52,6 +70,7 @@ export function TextareaAutoresize({
       onDoubleClick={() => {
         setIsEditing(true);
         window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
         textAreaRef.current.select();
       }}
       onBlur={() => {
