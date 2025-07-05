@@ -11,9 +11,8 @@
 - [x] - Load board data from disk in golang and use a function that pass that to frontend.
 - [x] - Add state logic to Sidebar (Setup boards routing using the sidebar using state)
 
-- [ ] - Implement drag and drop functionality like trello (use pragmatic dnd)
-
 - [ ] - Implement "Add new ListCard button" (partially done handle prev and next as well)
 - [ ] - Implement "Add new List button"
 - [ ] - Implement "Add new Board button" (in the Boards Sidebar group itself)
+- [ ] - Implement drag and drop functionality like trello (use pragmatic dnd)
 - [ ] - Implement the Ctrl+p quick search/command menu (i'm excited for this one)
