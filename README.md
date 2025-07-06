@@ -17,6 +17,7 @@
 - [x] BUG: onChange of the title of listCard and List update the state.
 - [x] BUG: after doubly-linked list implementation adjust deletion logic for that i.e. do prevCardId and nextCardId update
 - [x] Use Doubly-Linked list for ordering list-cards
+
 - [ ] Implement drag and drop functionality like trello (use pragmatic dnd)
       (DONE: made listcard dragable,
       TODO: make dropable tragets)
