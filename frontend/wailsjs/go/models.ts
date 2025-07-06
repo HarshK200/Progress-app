@@ -22,6 +22,8 @@ export namespace main {
 	    is_done: boolean;
 	    board_id: string;
 	    list_id: string;
+	    prev_card_id?: string;
+	    next_card_id?: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ListCard(source);
@@ -34,6 +36,8 @@ export namespace main {
 	        this.is_done = source["is_done"];
 	        this.board_id = source["board_id"];
 	        this.list_id = source["list_id"];
+	        this.prev_card_id = source["prev_card_id"];
+	        this.next_card_id = source["next_card_id"];
 	    }
 	}
 	export class List {

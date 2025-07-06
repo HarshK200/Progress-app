@@ -7,6 +7,7 @@ interface TextareaAutoresizeProps {
   outlineOnClick?: boolean;
   outlineOnDoubleClick?: boolean;
   className?: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export const TextareaAutoresize = memo(
@@ -15,8 +16,8 @@ export const TextareaAutoresize = memo(
     className,
     outlineOnDoubleClick = false,
     outlineOnClick = true,
+    onChange,
   }: TextareaAutoresizeProps) => {
-    const [inputVal, setInputVal] = useState(title);
     const [isEditing, setIsEditing] = useState(false);
     const textAreaRef = useRef<null | any>(null);
     let shiftIsPressed = false;
@@ -64,8 +65,8 @@ export const TextareaAutoresize = memo(
     return (
       <ReactTextareaAutosize
         ref={textAreaRef}
-        value={inputVal}
-        onChange={(e) => setInputVal(e.target.value)}
+        value={title}
+        onChange={onChange}
         className={finalClass}
         readOnly={!isEditing}
         onDoubleClick={() => {

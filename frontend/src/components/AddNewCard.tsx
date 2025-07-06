@@ -3,7 +3,13 @@ import { main } from "@wailsjs/go/models";
 import { useBoardOpenIdValue, useList, useSetListCards } from "@/store";
 import { v4 as uuidv4 } from "uuid";
 
-export const AddNewCard = ({ list_id }: { list_id: string }) => {
+export const AddNewCard = ({
+  list_id,
+  prev_card_id,
+}: {
+  list_id: string;
+  prev_card_id: string | undefined;
+}) => {
   const [list, setList] = useList(list_id);
   const setListCards = useSetListCards();
   const boardOpenId = useBoardOpenIdValue();
@@ -17,6 +23,8 @@ export const AddNewCard = ({ list_id }: { list_id: string }) => {
       is_done: false,
       board_id: boardOpenId,
       list_id: list_id,
+      prev_card_id: prev_card_id,
+      next_card_id: undefined,
     };
 
     // NOTE: Add the new card_id to the current list
@@ -26,7 +34,15 @@ export const AddNewCard = ({ list_id }: { list_id: string }) => {
     setListCards((prev) => {
       if (!prev) return undefined;
 
-      return { ...prev, [NewCardData.id]: NewCardData };
+      if (prev_card_id) {
+        return {
+          ...prev,
+          [prev_card_id]: { ...prev[prev_card_id], next_card_id: NewCardData.id, },
+          [NewCardData.id]: NewCardData,
+        };
+      } else {
+        return { ...prev, [NewCardData.id]: NewCardData };
+      }
     });
   }
 

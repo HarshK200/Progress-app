@@ -16,11 +16,13 @@ type List struct {
 }
 
 type ListCard struct {
-	Id      string `json:"id"`
-	Title   string `json:"title"`
-	IsDone  bool   `json:"is_done"`
-	BoardId string `json:"board_id"`
-	ListId  string `json:"list_id"`
+	Id         string  `json:"id"`
+	Title      string  `json:"title"`
+	IsDone     bool    `json:"is_done"`
+	BoardId    string  `json:"board_id"`
+	ListId     string  `json:"list_id"`
+	PrevCardId *string `json:"prev_card_id"`
+	NextCardId *string `json:"next_card_id"`
 }
 
 type UserData struct {

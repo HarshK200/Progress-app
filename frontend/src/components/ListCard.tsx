@@ -2,16 +2,36 @@ import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { useList, useListCard, useSetListCards } from "@/store";
 import { main } from "@wailsjs/go/models";
 import { SquarePen, Trash } from "lucide-react";
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import invariant from "tiny-invariant";
 
 interface ListCardProps {
   listcard_id: string;
 }
 
 export const ListCard = memo(({ listcard_id }: ListCardProps) => {
+  // NOTE: drag-and-drop logic
+  const listCardRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  useEffect(() => {
+    const el = listCardRef.current;
+    invariant(el);
+
+    return draggable({
+      element: el,
+      onDragStart: () => {
+        setDragging(true);
+      },
+      onDrop: () => {
+        setDragging(false);
+      },
+    });
+  }, []);
+
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
   const [card, setCard] = useListCard(listcard_id);
-
+  // NOTE: loading skeleton UI
   if (!card) {
     return (
       <div className="flex items-center w-full h-[42px] rounded-md bg-background animate-pulse"></div>
@@ -26,7 +46,10 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   }
 
   return (
-    <div className="group flex items-center w-full rounded-md bg-background">
+    <div
+      className={`group flex items-center w-full rounded-md bg-background ${dragging ? "opacity-50" : ""}`}
+      ref={listCardRef}
+    >
       {/* TODO: add custom checkbox componenet */}
 
       {/* Checkbox */}
@@ -40,6 +63,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
       {/* Input component */}
       <TextareaAutoresize
         title={card.title}
+        onChange={(e) => setCard({ ...card, title: e.target.value })}
         outlineOnClick={false}
         className="ml-3 my-3 rounded-md"
       />
@@ -83,6 +107,22 @@ const ListCardEditMenu = ({ listcard }: ListCardEditMenuProps) => {
       const newListCards = Object.fromEntries(
         Object.entries(prev).filter(([_, card]) => card.id !== listcard.id),
       );
+
+      // update the prevCard link (if exists)
+      if (listcard.prev_card_id) {
+        newListCards[listcard.prev_card_id] = {
+          ...newListCards[listcard.prev_card_id],
+          next_card_id: listcard.next_card_id,
+        };
+      }
+
+      // update the next link (if exists)
+      if (listcard.next_card_id) {
+        newListCards[listcard.next_card_id] = {
+          ...newListCards[listcard.next_card_id],
+          prev_card_id: listcard.prev_card_id,
+        };
+      }
 
       return newListCards;
     });

@@ -79,6 +79,21 @@ export const listCardAtomFamily = atomFamily((id: string) => {
     },
   );
 });
+// Listcard Group Atom Family(a group is linked via a doubly linked list)
+// NOTE: returns an unordered map
+export const listCardGroupAtomFamily = atomFamily((ids: string[]) => {
+  return atom((get) => {
+    const listCardGroup: Record<string, main.ListCard> = {};
+    ids.map((id) => {
+      const listCard = get(listCardAtomFamily(id));
+      if (listCard) {
+        listCardGroup[id] = listCard;
+      }
+    });
+
+    return listCardGroup;
+  });
+});
 
 // ----------- For Hydration && updating ------------
 export function useListCardsValue() {
@@ -91,4 +106,10 @@ export function useSetListCards() {
 // -------- For per-card access ---------
 export function useListCard(id: string) {
   return useAtom(listCardAtomFamily(id));
+}
+
+// -------- For a card-group access via there ids (doubly linked-list) ---------
+// NOTE: returns an unordered map
+export function useListCardsGroup(ids: string[]) {
+  return useAtomValue(listCardGroupAtomFamily(ids));
 }
