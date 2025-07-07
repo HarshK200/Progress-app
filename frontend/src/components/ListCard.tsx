@@ -1,7 +1,6 @@
-import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { useListCard } from "@/store";
-import { SquarePen } from "lucide-react";
+import { Plus, SquarePen } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import {
@@ -17,9 +16,10 @@ interface ListCardProps {
 
 export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   // NOTE: drag-and-drop logic
-  const listCardRef = useRef(null);
+  const listCardRef = useRef<HTMLDivElement | null>(null);
   const [dragIsAboutToStart, setDragIsAboutToStart] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [isDraggedOver, setIsDraggedOver] = useState(false);
   useEffect(() => {
     const element = listCardRef.current;
     invariant(element);
@@ -38,8 +38,20 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
           setDragging(false);
         },
       }),
+
       dropTargetForElements({
         element: element,
+        onDragEnter: () => {
+          setIsDraggedOver(true);
+        },
+        onDrag: ({ location }) => {
+          console.log("i'm dragging");
+          // TODO: decide which section the drag is top | bottom
+
+          const rect = element.getBoundingClientRect();
+        },
+        onDragLeave: () => setIsDraggedOver(false),
+        onDrop: () => setIsDraggedOver(false),
       }),
     );
   }, []);
@@ -60,10 +72,21 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
 
   return (
     <>
+      {/* List card */}
       <div
-        className={`group flex items-center w-full rounded-md bg-background ${dragging || dragIsAboutToStart ? "opacity-50" : ""}`}
+        className={`relative group flex items-center w-full rounded-md bg-background ${dragging || dragIsAboutToStart ? "opacity-50" : ""} ${dragIsAboutToStart ? "rotate-6" : ""}`}
         ref={listCardRef}
       >
+        {/* Dropable border */}
+        <div
+          className={`absolute w-full h-[2px] bg-blue-300 ${isDraggedOver ? "opacity-100" : "opacity-0"} top-0`}
+        >
+          <Plus
+            size={14}
+            className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
+
         {/* TODO: add custom checkbox componenet */}
 
         {/* Checkbox */}
