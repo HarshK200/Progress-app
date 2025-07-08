@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
 import { useList, useListCardsGroup } from "@/store";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { AddNewCard } from "@/components/AddNewCard";
 import { main } from "@wailsjs/go/models";
 
@@ -42,6 +42,9 @@ export const List = memo(({ list_id }: ListProps) => {
       currentCard = nextCard;
     }
   }
+
+  // listcard drag and drop logic TODO: make this droppable for listcard only when empty
+  // useEffect(() => {});
 
   return (
     <div className="flex flex-col min-w-[270px] max-w-[270px] text-foreground">
