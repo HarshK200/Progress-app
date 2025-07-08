@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
 import { useList, useListCardsGroup } from "@/store";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { AddNewCard } from "@/components/AddNewCard";
 import { main } from "@wailsjs/go/models";
 

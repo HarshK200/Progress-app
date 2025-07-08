@@ -50,6 +50,9 @@ export const listAtomFamily = atomFamily((id: string) => {
 });
 
 // ----------- For Hydration && updating ------------
+export function useListCards() {
+  return useAtom(listCardsAtom);
+}
 export function useListsValue() {
   return useAtomValue(listsAtom);
 }

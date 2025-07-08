@@ -1,5 +1,5 @@
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
-import { useList, useListCard } from "@/store";
+import { useList, useListCard, useSetListCards } from "@/store";
 import { Plus, SquarePen } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -33,8 +33,8 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   // NOTE: drag-and-drop logic
 
   const [list, setList] = useList(card.list_id);
-  const [prevCard, setPrevCard] = useListCard(card.prev_card_id ?? "");
-  const [nextCard, setNextCard] = useListCard(card.next_card_id ?? "");
+  // const [cards, setCards] = useListCards();
+  const setCards = useSetListCards();
 
   const listCardRef = useRef<HTMLDivElement | null>(null);
   const [dragIsAboutToStart, setDragIsAboutToStart] = useState(false);
@@ -55,10 +55,6 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             setCard,
             list,
             setList,
-            prevCard,
-            setPrevCard,
-            nextCard,
-            setNextCard,
           };
         },
         onGenerateDragPreview({ nativeSetDragImage }) {
@@ -82,9 +78,8 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
 
         onDrag: ({ location }) => {
           // NOTE: decides which section the drag is top | bottom
-
           const rect = element.getBoundingClientRect();
-          // no X position cause we only care about the Y
+          // no X position cause that is handled by onDragLeave
           const relativeY = location.current.input.clientY - rect.top;
           const percentageFromTop = (relativeY / rect.height) * 100;
 
@@ -102,80 +97,128 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
 
         onDrop: ({ source }) => {
           setIsDraggedOver(false);
-          debugger;
 
+          // card dragging
           const cardDragging = source.data.card as main.ListCard;
           const setCardDragging = source.data.setCard as (
             updateCard: main.ListCard,
           ) => void;
-          const isSameList = cardDragging.list_id === card.list_id;
 
-          // card dropped before
+          // card dragging list
+          const cardDraggingList = source.data.list as main.List;
+          const setCardDraggingList = source.data.setList as (
+            updatedList: main.List,
+          ) => void;
+
+          // NOTE: if card that's being dropped is from a different list TODO:(do this after the cards are updated)
+          // if (cardDragging.list_id !== card.list_id) {
+          // }
+
+          // attach card top-side
           if (closestDroppableEdge === "top") {
-            // ISSUE: handle two cards Swapping Edge case
+            debugger;
+            // add the card to current list
+            setList({
+              ...list!,
+              card_ids: [...list!.card_ids, cardDragging.id],
+            });
 
-            // NOTE: update card dragging's prev card
-            const cardDraggingPrevCard = source.data.prevCard as main.ListCard;
-            const setCardDraggingPrevCard = source.data.setPrevCard as (
-              updatedCard: main.ListCard,
-            ) => void;
-            if (cardDraggingPrevCard)
-              setCardDraggingPrevCard({
-                ...cardDraggingPrevCard,
-                next_card_id: cardDragging.next_card_id,
-              });
+            setCards((prev) => {
+              const updatedCards = { ...prev! };
 
-            // NOTE: update card dragging's next card
-            const cardDraggingNextCard = source.data.nextCard as main.ListCard;
-            const setCardDraggingNextCard = source.data.setNextCard as (
-              updatedCard: main.ListCard,
-            ) => void;
-            if (cardDraggingNextCard)
-              setCardDraggingNextCard({
-                ...cardDraggingNextCard,
-                prev_card_id: cardDragging.prev_card_id,
-              });
+              // BUG: infinite render on the card in same list swap edge case
+              // NOTE: this is temp jugad for both top and bottom drop
+              if (
+                cardDragging.prev_card_id === card.id ||
+                cardDragging.next_card_id === card.id
+              ) {
+                updatedCards[card.id] = {
+                  ...card,
+                  prev_card_id: cardDragging.id,
+                  next_card_id: cardDragging.next_card_id,
+                };
+                updatedCards[cardDragging.id] = {
+                  ...cardDragging,
+                  prev_card_id: card.prev_card_id,
+                  next_card_id: card.id,
+                };
+                if (card.prev_card_id)
+                  updatedCards[card.prev_card_id] = {
+                    ...updatedCards[card.prev_card_id],
+                    next_card_id: cardDragging.id,
+                  };
+                if (cardDragging.next_card_id)
+                  updatedCards[cardDragging.next_card_id] = {
+                    ...updatedCards[cardDragging.next_card_id],
+                    prev_card_id: card.id,
+                  };
 
-            // NOTE: updating card dragging's List
-            if (!isSameList) {
-              const cardDraggingList = source.data.list as main.List;
-              const setCardDraggingList = source.data.setList as (
-                updatedList: main.List,
-              ) => void;
+                // HACK: early return for edge case
+                return updatedCards;
+              }
+
+              if (cardDragging.prev_card_id) {
+                // =========== Dragging card updates ===============
+
+                // dragging card's prev update
+                updatedCards[cardDragging.prev_card_id] = {
+                  ...updatedCards[cardDragging.prev_card_id],
+                  next_card_id: cardDragging.next_card_id,
+                };
+              }
+              // dragging card's next update
+              if (cardDragging.next_card_id) {
+                updatedCards[cardDragging.next_card_id] = {
+                  ...updatedCards[cardDragging.next_card_id],
+                  prev_card_id: cardDragging.prev_card_id,
+                };
+              }
+
+              // ================= Lists updates ===============
+
+              // dragging list update
               setCardDraggingList({
                 ...cardDraggingList,
                 card_ids: cardDraggingList.card_ids.filter(
-                  (card_id) => card_id !== cardDragging.id,
+                  (id) => id !== cardDragging.id,
                 ),
               });
-            }
 
-            // NOTE: update card dragging
-            console.log("prev:", card.prev_card_id, "\nnext: ", card.id);
-            setCardDragging({
-              ...cardDragging,
-              prev_card_id: card.prev_card_id,
-              next_card_id: card.id,
-              list_id: card.list_id,
-            });
-
-            // NOTE: updating card dropping's list
-            if (!isSameList) {
-              if (!list) return;
+              // dropping list update
               setList({
-                ...list,
-                card_ids: [...list.card_ids, cardDragging.id],
+                ...list!,
+                card_ids: [...list!.card_ids, cardDragging.id],
               });
-            }
 
-            // NOTE: updating card dropping's prev card
-            setPrevCard({ ...prevCard!, next_card_id: cardDragging.id });
+              // =========== Dropping card updates ===============
 
-            // NOTE: updating card dropping
-            setCard({ ...card, prev_card_id: cardDragging.id });
+              // card dropped-on's prev card update
+              if (card.prev_card_id) {
+                updatedCards[card.prev_card_id] = {
+                  ...updatedCards[card.prev_card_id],
+                  next_card_id: cardDragging.id,
+                };
+              }
+
+              // dropping card update
+              updatedCards[cardDragging.id] = {
+                ...cardDragging,
+                prev_card_id: card.prev_card_id,
+                next_card_id: card.id,
+                list_id: card.list_id,
+              };
+
+              // card dropped-on
+              updatedCards[card.id] = {
+                ...card,
+                prev_card_id: cardDragging.id,
+              };
+
+              return updatedCards;
+            });
           }
 
-          // drop dropped after
+          // attach card bottom-side
           else if (closestDroppableEdge === "bottom") {
           }
 
@@ -183,7 +226,8 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
         },
       }),
     );
-  }, [closestDroppableEdge, card, prevCard, nextCard]);
+  }, [closestDroppableEdge, card, list]);
+  // NOTE: the closestDroppableEdge, card and list are in the dependency array to prevent the closure issue
 
   return (
     /* List card */

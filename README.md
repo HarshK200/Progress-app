@@ -17,14 +17,21 @@
 - [x] BUG: onChange of the title of listCard and List update the state.
 - [x] BUG: after doubly-linked list implementation adjust deletion logic for that i.e. do prevCardId and nextCardId update
 - [x] Use Doubly-Linked list for ordering list-cards
+- [x] BUG FIX: app breaks when two cards from one list are dropped next to each other in some other list
+      (this was a closure issue, because of where and how the function is written it froms a closure which
+      captures the draggingCardList value and hence causes issues)
+- [x] BUG FIX: the infinite loop bug on two card swap in the same list. (just had to do an early return)
 
-- [ ] Implement drag and drop functionality like trello (use pragmatic dnd)
+- [ ] Implement the drop on bottom functionality as well for dnd list cards
+
+- [ ] Implement drag and drop functionality like trello for listcards (use pragmatic dnd)
       (DONE: made listcard dragable,
       TODO: make dropable tragets)
+- [ ] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
 
-- [ ] Use Doubly-Linked list for ordering list-cards
 - [ ] Add (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 - [ ] Edit menu to delete list.
 - [ ] Edit menu to delete board.
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
+- [ ] Implement Ctrl+f for fuzzy find boards
 - [ ] Add Skeleton loading ui (there a react package)
