@@ -33,13 +33,11 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   // NOTE: drag-and-drop logic
 
   const [list, setList] = useList(card.list_id);
-  // const [cards, setCards] = useListCards();
   const setCards = useSetListCards();
 
   const listCardRef = useRef<HTMLDivElement | null>(null);
   const [dragIsAboutToStart, setDragIsAboutToStart] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [closestDroppableEdge, setClosestDroppableEdge] = useState("");
 
   useEffect(() => {
@@ -51,8 +49,8 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
         element: element,
         getInitialData: () => {
           return {
+            type: "listcard",
             card,
-            setCard,
             list,
             setList,
           };
@@ -72,11 +70,17 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
       dropTargetForElements({
         element: element,
 
-        onDragEnter: () => {
-          setIsDraggedOver(true);
+        onDragEnter: () => {},
+
+        // NOTE: this is just so that the drag doesn't trigger when dragging lists
+        canDrop: ({ source }) => {
+          if (source.data.type === "listcard") {
+            return true;
+          }
+          return false;
         },
 
-        onDrag: ({ location }) => {
+        onDrag: ({ location, source }) => {
           // NOTE: decides which section the drag is top | bottom
           const rect = element.getBoundingClientRect();
           // no X position cause that is handled by onDragLeave
@@ -91,18 +95,13 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
         },
 
         onDragLeave: () => {
-          setIsDraggedOver(false);
           setClosestDroppableEdge("");
         },
 
         onDrop: ({ source }) => {
-          setIsDraggedOver(false);
-
           // card dragging
           const cardDragging = source.data.card as main.ListCard;
-          const setCardDragging = source.data.setCard as (
-            updateCard: main.ListCard,
-          ) => void;
+          debugger;
 
           // card dragging list
           const cardDraggingList = source.data.list as main.List;
@@ -110,13 +109,8 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             updatedList: main.List,
           ) => void;
 
-          // NOTE: if card that's being dropped is from a different list TODO:(do this after the cards are updated)
-          // if (cardDragging.list_id !== card.list_id) {
-          // }
-
-          // attach card top-side
+          // NOTE: attach card top-side
           if (closestDroppableEdge === "top") {
-            debugger;
             // add the card to current list
             setList({
               ...list!,
@@ -126,8 +120,16 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             setCards((prev) => {
               const updatedCards = { ...prev! };
 
-              // BUG: infinite render on the card in same list swap edge case
-              // NOTE: this is temp jugad for both top and bottom drop
+              // NOTE: Edge case 1 : when dropping card on the same position
+              // NOTE: Edge case 2 : when the cardDragging and card are the same
+              if (
+                card.prev_card_id === cardDragging.id ||
+                card.id === cardDragging.id
+              ) {
+                return updatedCards;
+              }
+
+              // NOTE: Edge case: when swapping two cards in the same list
               if (
                 cardDragging.prev_card_id === card.id ||
                 cardDragging.next_card_id === card.id
@@ -219,7 +221,96 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
           }
 
           // attach card bottom-side
+          // WARN: i got lazy so this code is by chatgpt WARNING! this may contain bugs
           else if (closestDroppableEdge === "bottom") {
+            setList({
+              ...list!,
+              card_ids: [...list!.card_ids, cardDragging.id],
+            });
+
+            setCards((prev) => {
+              const updatedCards = { ...prev! };
+
+              if (
+                card.next_card_id === cardDragging.id ||
+                card.id === cardDragging.id
+              ) {
+                return updatedCards;
+              }
+
+              if (
+                cardDragging.prev_card_id === card.id ||
+                cardDragging.next_card_id === card.id
+              ) {
+                updatedCards[card.id] = {
+                  ...card,
+                  next_card_id: cardDragging.id,
+                  prev_card_id: cardDragging.prev_card_id,
+                };
+                updatedCards[cardDragging.id] = {
+                  ...cardDragging,
+                  next_card_id: card.next_card_id,
+                  prev_card_id: card.id,
+                };
+                if (card.next_card_id)
+                  updatedCards[card.next_card_id] = {
+                    ...updatedCards[card.next_card_id],
+                    prev_card_id: cardDragging.id,
+                  };
+                if (cardDragging.prev_card_id)
+                  updatedCards[cardDragging.prev_card_id] = {
+                    ...updatedCards[cardDragging.prev_card_id],
+                    next_card_id: card.id,
+                  };
+                return updatedCards;
+              }
+
+              if (cardDragging.prev_card_id) {
+                updatedCards[cardDragging.prev_card_id] = {
+                  ...updatedCards[cardDragging.prev_card_id],
+                  next_card_id: cardDragging.next_card_id,
+                };
+              }
+              if (cardDragging.next_card_id) {
+                updatedCards[cardDragging.next_card_id] = {
+                  ...updatedCards[cardDragging.next_card_id],
+                  prev_card_id: cardDragging.prev_card_id,
+                };
+              }
+
+              setCardDraggingList({
+                ...cardDraggingList,
+                card_ids: cardDraggingList.card_ids.filter(
+                  (id) => id !== cardDragging.id,
+                ),
+              });
+
+              setList({
+                ...list!,
+                card_ids: [...list!.card_ids, cardDragging.id],
+              });
+
+              if (card.next_card_id) {
+                updatedCards[card.next_card_id] = {
+                  ...updatedCards[card.next_card_id],
+                  prev_card_id: cardDragging.id,
+                };
+              }
+
+              updatedCards[cardDragging.id] = {
+                ...cardDragging,
+                prev_card_id: card.id,
+                next_card_id: card.next_card_id,
+                list_id: card.list_id,
+              };
+
+              updatedCards[card.id] = {
+                ...card,
+                next_card_id: cardDragging.id,
+              };
+
+              return updatedCards;
+            });
           }
 
           setClosestDroppableEdge("");

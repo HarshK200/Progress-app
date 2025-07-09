@@ -21,17 +21,20 @@
       (this was a closure issue, because of where and how the function is written it froms a closure which
       captures the draggingCardList value and hence causes issues)
 - [x] BUG FIX: the infinite loop bug on two card swap in the same list. (just had to do an early return)
-
-- [ ] Implement the drop on bottom functionality as well for dnd list cards
-
-- [ ] Implement drag and drop functionality like trello for listcards (use pragmatic dnd)
+- [x] Implement drag and drop functionality like trello for listcards (use pragmatic dnd)
       (DONE: made listcard dragable,
-      TODO: make dropable tragets)
-- [ ] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
+      DONE: make dropable tragets)
+- [x] Implement the drop on bottom functionality as well for dnd list cards (code by chatgpt)
 
+- [ ] Adjust for the gap-1.5 i.e. 6px when dropping
+
+- [ ] Make an empty list also dropable for listcard
+
+- [ ] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
 - [ ] Add (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 - [ ] Edit menu to delete list.
 - [ ] Edit menu to delete board.
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
-- [ ] Add Skeleton loading ui (there a react package)
+- [ ] Add Skeleton loading ui (just use tailwind animate-pulse)
+- [ ] Add priority colors

@@ -22,7 +22,7 @@ export const TextareaAutoresize = memo(
     const textAreaRef = useRef<null | any>(null);
     let shiftIsPressed = false;
 
-    const baseClass = `resize-none select-none border-none bg-inherit ${isEditing ? "cursor-text" : "cursor-default"}`;
+    const baseClass = `resize-none border-none bg-inherit ${isEditing ? "cursor-text" : "select-none cursor-default"}`;
     const outlineDblClass = `${!isEditing && outlineOnDoubleClick ? "outline-none" : ""}`;
     const outlineSingleClass = `${outlineOnClick ? "" : !outlineOnDoubleClick && "outline-none"}`;
     const finalClass = cn(
