@@ -50,7 +50,7 @@ export const List = memo(({ list_id }: ListProps) => {
     }
   }
 
-  // listcard drag and drop logic TODO: make this droppable for listcard only when empty
+  // listcard drag and drop logic
   const setCards = useSetListCards();
   const listRef = useRef<HTMLDivElement | null>(null);
   const cardsContainerRef = useRef<HTMLDivElement | null>(null);
@@ -62,17 +62,26 @@ export const List = memo(({ list_id }: ListProps) => {
     "left" | "right" | null
   >(null);
 
+  const addNewBtnRef = useRef<HTMLButtonElement | null>(null);
+
   useEffect(() => {
-    const element = listRef.current;
-    const elementWrapper = listWrapperRef.current;
+    const listElement = listRef.current;
+    const listElementWrapper = listWrapperRef.current;
     const cardsContainerScroll = cardsContainerRef.current;
-    invariant(element);
-    invariant(elementWrapper);
+    const addNewBtnElement = addNewBtnRef.current;
+    invariant(listElement);
+    invariant(listElementWrapper);
     invariant(cardsContainerScroll);
+    invariant(addNewBtnElement);
 
     return combine(
       draggable({
-        element: element,
+        element: listElement,
+
+        canDrag: ({ input }) => {
+          return true;
+        },
+
         getInitialData: () => {
           return { type: "list" };
         },
@@ -90,7 +99,7 @@ export const List = memo(({ list_id }: ListProps) => {
 
       // NOTE: drop only for listCard ONLY when list is empty
       dropTargetForElements({
-        element: element,
+        element: listElement,
 
         canDrop: ({ source }) => {
           if (source.data.type === "listcard" && list.card_ids.length === 0) {
@@ -107,8 +116,8 @@ export const List = memo(({ list_id }: ListProps) => {
           setListCardDragOver(false);
         },
 
+        // NOTE:  list-card drop logic
         onDrop: ({ source }) => {
-          // NOTE:  list-card drop logic
           setListCardDragOver(false);
 
           const cardDragging = source.data.card as main.ListCard;
@@ -162,17 +171,26 @@ export const List = memo(({ list_id }: ListProps) => {
 
       // NOTE: drop target for list
       dropTargetForElements({
-        element: elementWrapper,
+        element: listElementWrapper,
         onDrag: () => {},
       }),
 
       autoScrollForElements({
         element: cardsContainerScroll,
       }),
+
+      // NOTE: disable drag for specific elements
+      draggable({
+        element: addNewBtnElement,
+        canDrag: () => {
+          return false;
+        },
+      }),
     );
   });
 
   return (
+    // NOTE: List wrapper div
     <div ref={listWrapperRef}>
       <div
         className={`rounded-md bg-background-secondary flex flex-col min-w-[270px] max-w-[270px] h-fit text-foreground ${isDragAboutToStart && "opacity-50"}`}
@@ -206,6 +224,7 @@ export const List = memo(({ list_id }: ListProps) => {
 
         {/* NOTE: Add List Card Button */}
         <AddNewCard
+          ref={addNewBtnRef}
           list_id={list.id}
           prev_card_id={
             listCardsDataOrdered[listCardsDataOrdered.length - 1]?.id

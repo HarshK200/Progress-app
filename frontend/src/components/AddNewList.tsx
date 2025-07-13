@@ -3,7 +3,13 @@ import { main } from "@wailsjs/go/models";
 import { Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-export const AddNewList = ({ board_id }: { board_id: string }) => {
+export const AddNewList = ({
+  board_id,
+  prev_list_id,
+}: {
+  board_id: string;
+  prev_list_id: string;
+}) => {
   const setLists = useSetLists();
   const setBoards = useSetBoards();
 
@@ -14,12 +20,18 @@ export const AddNewList = ({ board_id }: { board_id: string }) => {
       card_ids: [],
       board_id: board_id,
       classname: "",
+      prev_list_id: prev_list_id,
+      next_list_id: undefined,
     };
 
     setLists((prev) => {
       if (!prev) return undefined;
 
-      return { ...prev, [NewListData.id]: NewListData };
+      return {
+        ...prev,
+        [prev_list_id]: { ...prev[prev_list_id], next_list_id: NewListData.id },
+        [NewListData.id]: NewListData,
+      };
     });
 
     setBoards((prev) => {

@@ -49,7 +49,7 @@ const BoardPage = ({ board_id }: BoardPageProps) => {
   }
 
   return (
-    <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto">
+    <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-background-secondary scrollbar-track-transparent">
       {
         /* Lists */
         orderedLists.map((list) => {
@@ -58,7 +58,10 @@ const BoardPage = ({ board_id }: BoardPageProps) => {
       }
 
       {/* Add New List */}
-      <AddNewList board_id={board_id} />
+      <AddNewList
+        board_id={board_id}
+        prev_list_id={orderedLists[orderedLists.length - 1].id}
+      />
     </main>
   );
 };

@@ -336,8 +336,9 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   // NOTE: the closestDroppableEdge, card and list are in the dependency array to prevent the closure issue
 
   return (
-    /* List card */
+    // List card wrapper
     <div className="py-[3px]" ref={listCardWrapperRef}>
+      {/* List card */}
       <div
         className={`relative group flex items-center w-full rounded-md bg-background ${dragging || dragIsAboutToStart ? "opacity-50" : ""} ${dragIsAboutToStart ? "rotate-6" : ""}`}
         ref={listCardRef}
@@ -367,7 +368,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
           title={card.title}
           onChange={(e) => setCard({ ...card, title: e.target.value })}
           outlineOnClick={false}
-          className="ml-3 my-3 rounded-md"
+          className="ml-3 my-3 rounded-md overflow-hidden"
         />
 
         {/* Edit menu */}
