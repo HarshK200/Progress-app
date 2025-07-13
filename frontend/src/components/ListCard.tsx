@@ -21,7 +21,9 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   // NOTE: loading skeleton UI
   if (!card) {
     return (
-      <div className="flex items-center w-full h-[42px] rounded-md bg-background animate-pulse"></div>
+      <div className="py-[3px]">
+        <div className="flex items-center w-full h-[42px] rounded-md bg-background animate-pulse"></div>
+      </div>
     );
   }
 
@@ -31,18 +33,22 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
   }
 
   // NOTE: drag-and-drop logic
-
   const [list, setList] = useList(card.list_id);
   const setCards = useSetListCards();
 
   const listCardRef = useRef<HTMLDivElement | null>(null);
+  const listCardWrapperRef = useRef<HTMLDivElement | null>(null);
   const [dragIsAboutToStart, setDragIsAboutToStart] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [closestDroppableEdge, setClosestDroppableEdge] = useState("");
+  const [closestDroppableEdge, setClosestDroppableEdge] = useState<
+    "top" | "bottom" | null
+  >(null);
 
   useEffect(() => {
+    const elementWrapper = listCardWrapperRef.current;
     const element = listCardRef.current;
     invariant(element);
+    invariant(elementWrapper);
 
     return combine(
       draggable({
@@ -70,8 +76,6 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
       dropTargetForElements({
         element: element,
 
-        onDragEnter: () => {},
-
         // NOTE: this is just so that the drag doesn't trigger when dragging lists
         canDrop: ({ source }) => {
           if (source.data.type === "listcard") {
@@ -80,34 +84,17 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
           return false;
         },
 
-        onDrag: ({ location, source }) => {
-          // NOTE: decides which section the drag is top | bottom
-          const rect = element.getBoundingClientRect();
-          // no X position cause that is handled by onDragLeave
-          const relativeY = location.current.input.clientY - rect.top;
-          const percentageFromTop = (relativeY / rect.height) * 100;
-
-          if (percentageFromTop > 50 && percentageFromTop <= 100) {
-            setClosestDroppableEdge("bottom");
-          } else if (percentageFromTop >= 0 && percentageFromTop <= 50) {
-            setClosestDroppableEdge("top");
-          }
-        },
-
-        onDragLeave: () => {
-          setClosestDroppableEdge("");
-        },
-
         onDrop: ({ source }) => {
           // card dragging
           const cardDragging = source.data.card as main.ListCard;
-          debugger;
 
           // card dragging list
           const cardDraggingList = source.data.list as main.List;
           const setCardDraggingList = source.data.setList as (
             updatedList: main.List,
           ) => void;
+
+          if (!closestDroppableEdge) return;
 
           // NOTE: attach card top-side
           if (closestDroppableEdge === "top") {
@@ -313,7 +300,35 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             });
           }
 
-          setClosestDroppableEdge("");
+          setClosestDroppableEdge(null);
+        },
+      }),
+
+      dropTargetForElements({
+        element: elementWrapper,
+
+        onDrag: ({ location, source }) => {
+          const cardDragging = source.data.card as main.ListCard;
+          if (cardDragging.id === card.id) {
+            setClosestDroppableEdge(null);
+            return;
+          }
+
+          // NOTE: decides which section the drag is top | bottom
+          const rect = elementWrapper.getBoundingClientRect();
+          // no X position cause that is handled by onDragLeave
+          const relativeY = location.current.input.clientY - rect.top;
+          const percentageFromTop = (relativeY / rect.height) * 100;
+
+          if (percentageFromTop > 50 && percentageFromTop <= 100) {
+            setClosestDroppableEdge("bottom");
+          } else if (percentageFromTop >= 0 && percentageFromTop <= 50) {
+            setClosestDroppableEdge("top");
+          }
+        },
+
+        onDragLeave: ({ location }) => {
+          setClosestDroppableEdge(null);
         },
       }),
     );
@@ -322,56 +337,58 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
 
   return (
     /* List card */
-    <div
-      className={`relative group flex items-center w-full rounded-md bg-background ${dragging || dragIsAboutToStart ? "opacity-50" : ""} ${dragIsAboutToStart ? "rotate-6" : ""}`}
-      ref={listCardRef}
-    >
-      {/* Dropable Area Hint Top */}
+    <div className="py-[3px]" ref={listCardWrapperRef}>
       <div
-        className={`z-10 absolute w-full h-[2px] bg-blue-300 ${closestDroppableEdge === "top" ? "opacity-100" : "opacity-0"} -top-1`}
+        className={`relative group flex items-center w-full rounded-md bg-background ${dragging || dragIsAboutToStart ? "opacity-50" : ""} ${dragIsAboutToStart ? "rotate-6" : ""}`}
+        ref={listCardRef}
       >
-        <Plus
-          size={14}
-          className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        {/* Dropable Area Hint Top */}
+        <div
+          className={`z-10 absolute w-full h-[2px] bg-blue-300 ${closestDroppableEdge === "top" ? "opacity-100" : "opacity-0"} -top-1`}
+        >
+          <Plus
+            size={14}
+            className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
+
+        {/* TODO: add custom checkbox componenet */}
+
+        {/* Checkbox */}
+        <input
+          type="checkbox"
+          checked={card.is_done}
+          onChange={toggleCardIsDone}
+          className={`px-2 ml-2 group-hover:opacity-100 opacity-0 transition-all duration-500`}
         />
-      </div>
 
-      {/* TODO: add custom checkbox componenet */}
-
-      {/* Checkbox */}
-      <input
-        type="checkbox"
-        checked={card.is_done}
-        onChange={toggleCardIsDone}
-        className={`px-2 ml-2 group-hover:opacity-100 opacity-0 transition-all duration-500`}
-      />
-
-      {/* Input component */}
-      <TextareaAutoresize
-        title={card.title}
-        onChange={(e) => setCard({ ...card, title: e.target.value })}
-        outlineOnClick={false}
-        className="ml-3 my-3 rounded-md"
-      />
-
-      {/* Edit menu */}
-      <div className="relative">
-        <SquarePen
-          size={20}
-          className="group-hover:opacity-100 opacity-0 mx-3 cursor-pointer"
-          onClick={() => setIsEditMenuOpen((prev) => !prev)}
+        {/* Input component */}
+        <TextareaAutoresize
+          title={card.title}
+          onChange={(e) => setCard({ ...card, title: e.target.value })}
+          outlineOnClick={false}
+          className="ml-3 my-3 rounded-md"
         />
-        {isEditMenuOpen && <ListCardEditMenu listcard={card} />}
-      </div>
 
-      {/* Dropable Area Hint Bottom */}
-      <div
-        className={`z-10 absolute w-full h-[2px] bg-blue-300 ${closestDroppableEdge === "bottom" ? "opacity-100" : "opacity-0"} -bottom-1`}
-      >
-        <Plus
-          size={14}
-          className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
+        {/* Edit menu */}
+        <div className="relative">
+          <SquarePen
+            size={20}
+            className="group-hover:opacity-100 opacity-0 mx-3 cursor-pointer"
+            onClick={() => setIsEditMenuOpen((prev) => !prev)}
+          />
+          {isEditMenuOpen && <ListCardEditMenu listcard={card} />}
+        </div>
+
+        {/* Dropable Area Hint Bottom */}
+        <div
+          className={`z-10 absolute w-full h-[2px] bg-blue-300 ${closestDroppableEdge === "bottom" ? "opacity-100" : "opacity-0"} -bottom-1`}
+        >
+          <Plus
+            size={14}
+            className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        </div>
       </div>
     </div>
   );

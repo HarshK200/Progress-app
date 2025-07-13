@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
-import { useList, useListCardsGroup, useSetListCards } from "@/store";
+import { useList, useListCardGroup, useSetListCards } from "@/store";
 import { memo, useEffect, useRef, useState } from "react";
 import { AddNewCard } from "@/components/AddNewCard";
 import { main } from "@wailsjs/go/models";
@@ -10,6 +10,7 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import invariant from "tiny-invariant";
 
 interface ListProps {
@@ -25,7 +26,7 @@ export const List = memo(({ list_id }: ListProps) => {
       </div>
     );
   }
-  let listCardsDataMap = useListCardsGroup(list.card_ids);
+  let listCardsDataMap = useListCardGroup(list.card_ids);
   let listCardsDataOrdered: main.ListCard[] = [];
   if (list.card_ids.length > 0) {
     let currentCard = listCardsDataMap[list.card_ids[0]];
@@ -52,12 +53,22 @@ export const List = memo(({ list_id }: ListProps) => {
   // listcard drag and drop logic TODO: make this droppable for listcard only when empty
   const setCards = useSetListCards();
   const listRef = useRef<HTMLDivElement | null>(null);
+  const cardsContainerRef = useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = useState(false);
   const [listCardDragOver, setListCardDragOver] = useState(false);
   const [isDragAboutToStart, setDragIsAboutToStart] = useState(false);
+  const listWrapperRef = useRef<HTMLDivElement | null>(null);
+  const [closestDropEdge, setClosestDropEdge] = useState<
+    "left" | "right" | null
+  >(null);
+
   useEffect(() => {
     const element = listRef.current;
+    const elementWrapper = listWrapperRef.current;
+    const cardsContainerScroll = cardsContainerRef.current;
     invariant(element);
+    invariant(elementWrapper);
+    invariant(cardsContainerScroll);
 
     return combine(
       draggable({
@@ -80,6 +91,7 @@ export const List = memo(({ list_id }: ListProps) => {
       // NOTE: drop only for listCard ONLY when list is empty
       dropTargetForElements({
         element: element,
+
         canDrop: ({ source }) => {
           if (source.data.type === "listcard" && list.card_ids.length === 0) {
             return true;
@@ -96,6 +108,7 @@ export const List = memo(({ list_id }: ListProps) => {
         },
 
         onDrop: ({ source }) => {
+          // NOTE:  list-card drop logic
           setListCardDragOver(false);
 
           const cardDragging = source.data.card as main.ListCard;
@@ -137,50 +150,61 @@ export const List = memo(({ list_id }: ListProps) => {
             });
 
             // add it to this list
-            setList({ ...list, card_ids: [...list.card_ids, cardDragging.id] });
+            setList({
+              ...list,
+              card_ids: [...list.card_ids, cardDragging.id],
+            });
 
             return updatedCards;
           });
         },
       }),
+
+      // NOTE: drop target for list
+      dropTargetForElements({
+        element: elementWrapper,
+        onDrag: () => {},
+      }),
+
+      autoScrollForElements({
+        element: cardsContainerScroll,
+      }),
     );
   });
 
   return (
-    <div
-      className={`flex flex-col min-w-[270px] max-w-[270px] h-fit text-foreground ${isDragAboutToStart && "opacity-50"} `}
-      ref={listRef}
-    >
-      {/* List Title */}
+    <div ref={listWrapperRef}>
       <div
-        className={`bg-background-secondary ${listCardDragOver && "bg-border"} pt-2 rounded-t-md`}
+        className={`rounded-md bg-background-secondary flex flex-col min-w-[270px] max-w-[270px] h-fit text-foreground ${isDragAboutToStart && "opacity-50"}`}
+        ref={listRef}
       >
-        <TextareaAutoresize
-          title={list.title}
-          outlineOnDoubleClick
-          onChange={(e) => {
-            setList({ ...list, title: e.target.value });
-          }}
-          className={`font-bold mx-4`}
-        />
-      </div>
+        {/* NOTE: List Title */}
+        <div className={`${listCardDragOver ? "bg-border" : ""} pt-2`}>
+          <TextareaAutoresize
+            title={list.title}
+            outlineOnDoubleClick
+            onChange={(e) => {
+              setList({ ...list, title: e.target.value });
+            }}
+            className={`font-bold mx-4`}
+          />
+        </div>
 
-      {/* List Body */}
-      <div
-        className={cn(
-          `bg-background-secondary ${listCardDragOver && "bg-border"} flex flex-col px-2 py-2 rounded-b-md gap-1.5`,
-          list.classname,
-        )}
-      >
-        {
-          /* List Cards*/
-          listCardsDataOrdered.map((card) => {
+        {/* NOTE: List Cards */}
+        <div
+          className={cn(
+            `max-h-[80vh] overflow-y-auto ${listCardDragOver && "bg-border"} flex flex-col px-2 py-2 scrollbar-thin scrollbar-thumb-background-secondary scrollbar-track-transparent`,
+            list.classname,
+          )}
+          ref={cardsContainerRef}
+        >
+          {listCardsDataOrdered.map((card) => {
             if (!card) return null;
             return <ListCard key={card.id} listcard_id={card.id} />;
-          })
-        }
+          })}
+        </div>
 
-        {/* Add List Card Button*/}
+        {/* NOTE: Add List Card Button */}
         <AddNewCard
           list_id={list.id}
           prev_card_id={

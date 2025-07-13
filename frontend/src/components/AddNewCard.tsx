@@ -48,7 +48,7 @@ export const AddNewCard = ({
 
   return (
     <button
-      className="flex px-2 py-1 rounded-md gap-2 items-center hover:bg-background/50 transition-all"
+      className="flex mb-2 mx-2 px-1 py-2 rounded-md gap-2 items-center hover:bg-background/50 transition-all"
       onClick={addNewCard}
     >
       <Plus width={22} />

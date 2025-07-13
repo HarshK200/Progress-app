@@ -12,7 +12,9 @@
       "id": "1",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "title": "Todo",
-      "card_ids": ["564799fc-798a-4994-b341-97ba70e3724a"]
+      "card_ids": ["564799fc-798a-4994-b341-97ba70e3724a"],
+      "prev_list_id": null,
+      "next_list_id": "2"
     },
     "2": {
       "id": "2",
@@ -22,7 +24,9 @@
         "171883c6-621b-4fcc-b01b-0586dc2b0250",
         "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
         "6969e000f2-16cc-43c4-b186-5cd714142f1e"
-      ]
+      ],
+      "prev_list_id": "1",
+      "next_list_id": "3"
     },
     "3": {
       "id": "3",
@@ -31,13 +35,17 @@
       "card_ids": [
         "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
         "62e000f2-16cc-43c4-b186-5cd714142f1e"
-      ]
+      ],
+      "prev_list_id": "2",
+      "next_list_id": "4"
     },
     "4": {
       "id": "4",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "title": "BackBurner",
-      "card_ids": []
+      "card_ids": [],
+      "prev_list_id": "3",
+      "next_list_id": null
     }
   },
 

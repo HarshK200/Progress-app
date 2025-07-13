@@ -24,13 +24,15 @@
 - [x] Implement drag and drop functionality like trello for listcards (use pragmatic dnd)
       (DONE: made listcard dragable,
       DONE: make dropable tragets)
-- [x] Implement the drop on bottom functionality as well for dnd list cards (code by chatgpt)
-
-- [ ] Adjust for the gap-1.5 i.e. 6px when dropping
-
-- [ ] Make an empty list also dropable for listcard
+- [x] Implement the drop on top functionality for dnd list cards
+- [x] Implement the drop on bottom functionality for dnd list cards (i just asked chatgpt for drop on top inverse)
+- [x] POLISH: Adjust for the gap-1.5 i.e. 6px when dropping (i did as much as i could)
+- [x] Make an empty list also dropTarget for listcard
+- [x] Make Sidebar skeleton UI
+- [x] Implement scalling for Listcards(when dragging and dropping)
 
 - [ ] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
+
 - [ ] Add (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 - [ ] Edit menu to delete list.
 - [ ] Edit menu to delete board.

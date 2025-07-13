@@ -1,15 +1,13 @@
-import { useBoard, useSetLists } from "@/store";
+import { useSetBoards, useSetLists } from "@/store";
 import { main } from "@wailsjs/go/models";
 import { Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
 export const AddNewList = ({ board_id }: { board_id: string }) => {
   const setLists = useSetLists();
-  const [board, setBoard] = useBoard(board_id);
+  const setBoards = useSetBoards();
 
   function addNewList() {
-    if (!board) return;
-
     const NewListData: main.List = {
       id: uuidv4(),
       title: "New List",
@@ -23,7 +21,17 @@ export const AddNewList = ({ board_id }: { board_id: string }) => {
 
       return { ...prev, [NewListData.id]: NewListData };
     });
-    setBoard({ ...board, list_ids: [...board.list_ids, NewListData.id] });
+
+    setBoards((prev) => {
+      const updatedBoards = { ...prev };
+
+      updatedBoards[board_id] = {
+        ...updatedBoards[board_id],
+        list_ids: [...updatedBoards[board_id].list_ids, NewListData.id],
+      };
+
+      return updatedBoards;
+    });
   }
 
   return (

@@ -48,20 +48,37 @@ export const listAtomFamily = atomFamily((id: string) => {
     },
   );
 });
+export const listGroupAtomFamily = atomFamily((ids: string[]) => {
+  return atom((get) => {
+    const listGroup: Record<string, main.List> = {};
+    ids.map((id) => {
+      const list = get(listAtomFamily(id));
+      if (list) {
+        listGroup[list.id] = list;
+      }
+    });
+
+    return listGroup;
+  });
+});
 
 // ----------- For Hydration && updating ------------
-export function useListCards() {
-  return useAtom(listCardsAtom);
-}
 export function useListsValue() {
   return useAtomValue(listsAtom);
 }
 export function useSetLists() {
   return useSetAtom(listsAtom);
 }
+export function useLists() {
+  return useAtom(listsAtom);
+}
+
 // -------- For per-list access ---------
 export function useList(id: string) {
   return useAtom(listAtomFamily(id));
+}
+export function useListGroup(ids: string[]) {
+  return useAtomValue(listGroupAtomFamily(ids));
 }
 
 // Listcard Atom
@@ -105,6 +122,9 @@ export function useListCardsValue() {
 export function useSetListCards() {
   return useSetAtom(listCardsAtom);
 }
+export function useListCards() {
+  return useAtom(listCardsAtom);
+}
 
 // -------- For per-card access ---------
 export function useListCard(id: string) {
@@ -113,6 +133,6 @@ export function useListCard(id: string) {
 
 // -------- For a card-group access via there ids (doubly linked-list) ---------
 // NOTE: returns an unordered map
-export function useListCardsGroup(ids: string[]) {
+export function useListCardGroup(ids: string[]) {
   return useAtomValue(listCardGroupAtomFamily(ids));
 }

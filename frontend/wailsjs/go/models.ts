@@ -46,6 +46,8 @@ export namespace main {
 	    classname: string;
 	    board_id: string;
 	    card_ids: string[];
+	    prev_list_id?: string;
+	    next_list_id?: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new List(source);
@@ -58,6 +60,8 @@ export namespace main {
 	        this.classname = source["classname"];
 	        this.board_id = source["board_id"];
 	        this.card_ids = source["card_ids"];
+	        this.prev_list_id = source["prev_list_id"];
+	        this.next_list_id = source["next_list_id"];
 	    }
 	}
 	export class UserData {

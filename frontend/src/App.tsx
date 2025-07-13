@@ -14,7 +14,6 @@ const App = () => {
     <div className="dark flex min-w-full min-h-screen bg-background text-foreground">
       <Sidebar />
 
-      {/* TODO:  */}
       <BoardPage board_id={boardOpen} />
     </div>
   );

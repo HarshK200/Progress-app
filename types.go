@@ -8,11 +8,13 @@ type Board struct {
 }
 
 type List struct {
-	Id        string   `json:"id"`
-	Title     string   `json:"title"`
-	ClassName string   `json:"classname"`
-	BoardId   string   `json:"board_id"`
-	CardIds   []string `json:"card_ids"`
+	Id         string   `json:"id"`
+	Title      string   `json:"title"`
+	ClassName  string   `json:"classname"`
+	BoardId    string   `json:"board_id"`
+	CardIds    []string `json:"card_ids"`
+	PrevListid *string  `json:"prev_list_id"`
+	NextListid *string  `json:"next_list_id"`
 }
 
 type ListCard struct {

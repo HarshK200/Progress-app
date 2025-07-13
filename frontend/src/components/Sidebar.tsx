@@ -16,8 +16,20 @@ const Sidebar = () => {
   const boards = useBoardsValue();
 
   if (!boards) {
-    // TODO: make skeletal UI Component
-    return <div>"loading"</div>;
+    return (
+      <div className="min-h-screen min-w-[303px] flex animate-pulse border-r-[1px] border-r-border">
+        <div className="bg-background z-10 min-h-screen w-min border-r-[1px] border-r-border px-3 py-3">
+          <PanelLeft size={22} className="cursor-pointer" />
+        </div>
+        <div className="flex h-fit w-full select-none bg-background py-3 px-2">
+          <SidebarGroup name="" classname="animate-pulse" fakeHover>
+            <div className="mx-2 mt-4 my-2 px-4 py-1 bg-background-secondary rounded-md"></div>
+            <div className="mx-2 my-2 px-4 py-1 bg-background-secondary rounded-md"></div>
+            <div className="mx-2 my-2 px-4 py-1 bg-background-secondary rounded-md"></div>
+          </SidebarGroup>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -51,15 +63,21 @@ interface SidebarGroupProps {
   name: string;
   classname?: string;
   children?: React.ReactNode;
+  fakeHover?: boolean;
 }
-const SidebarGroup = ({ name, children, classname }: SidebarGroupProps) => {
+const SidebarGroup = ({
+  name,
+  children,
+  classname,
+  fakeHover,
+}: SidebarGroupProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className={cn("w-full h-fit", classname)}>
       {/* Group-name */}
       <div
-        className="flex items-center gap-2 py-1 px-1 cursor-pointer hover:bg-background-secondary rounded-md"
+        className={`flex items-center gap-2 py-1 px-1 cursor-pointer hover:bg-background-secondary ${fakeHover && "bg-background-secondary"} rounded-md`}
         onClick={() => setIsOpen((prev) => !prev)}
       >
         {isOpen ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
