@@ -78,9 +78,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
 
         // NOTE: this is just so that the drag doesn't trigger when dragging lists
         canDrop: ({ source }) => {
-          if (source.data.type === "listcard") {
-            return true;
-          }
+          if (source.data.type === "listcard") return true;
           return false;
         },
 
@@ -142,7 +140,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
                     prev_card_id: card.id,
                   };
 
-                // HACK: early return for edge case
+                // NOTE: early return for edge case
                 return updatedCards;
               }
 
@@ -304,8 +302,14 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
         },
       }),
 
+      // NOTE: decides which section the drag is top | bottom
       dropTargetForElements({
         element: elementWrapper,
+
+        canDrop: ({ source }) => {
+          if (source.data.type !== "listcard") return false;
+          return true;
+        },
 
         onDrag: ({ location, source }) => {
           const cardDragging = source.data.card as main.ListCard;
@@ -314,7 +318,6 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             return;
           }
 
-          // NOTE: decides which section the drag is top | bottom
           const rect = elementWrapper.getBoundingClientRect();
           // no X position cause that is handled by onDragLeave
           const relativeY = location.current.input.clientY - rect.top;
@@ -327,7 +330,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
           }
         },
 
-        onDragLeave: ({ location }) => {
+        onDragLeave: () => {
           setClosestDroppableEdge(null);
         },
       }),

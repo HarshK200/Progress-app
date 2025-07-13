@@ -54,6 +54,7 @@ export const List = memo(({ list_id }: ListProps) => {
   const setCards = useSetListCards();
   const listRef = useRef<HTMLDivElement | null>(null);
   const cardsContainerRef = useRef<HTMLDivElement | null>(null);
+  const addNewBtnRef = useRef<HTMLButtonElement | null>(null);
   const [dragging, setDragging] = useState(false);
   const [listCardDragOver, setListCardDragOver] = useState(false);
   const [isDragAboutToStart, setDragIsAboutToStart] = useState(false);
@@ -61,8 +62,6 @@ export const List = memo(({ list_id }: ListProps) => {
   const [closestDropEdge, setClosestDropEdge] = useState<
     "left" | "right" | null
   >(null);
-
-  const addNewBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const listElement = listRef.current;
@@ -81,9 +80,8 @@ export const List = memo(({ list_id }: ListProps) => {
         canDrag: ({ input }) => {
           return true;
         },
-
         getInitialData: () => {
-          return { type: "list" };
+          return { type: "list", list: list };
         },
         onGenerateDragPreview({ nativeSetDragImage }) {
           setDragIsAboutToStart(true);
@@ -169,10 +167,41 @@ export const List = memo(({ list_id }: ListProps) => {
         },
       }),
 
-      // NOTE: drop target for list
+      // NOTE: decides which edge to drop at left | right
       dropTargetForElements({
         element: listElementWrapper,
-        onDrag: () => {},
+
+        canDrop: ({ source }) => {
+          if (source.data.type === "list") return true;
+          return false;
+        },
+
+        onDrag: ({ location, source }) => {
+          const listDragging = source.data.list as main.List;
+          if (listDragging.id === list.id) {
+            setClosestDropEdge(null);
+            return;
+          }
+
+          const rect = listElementWrapper.getBoundingClientRect();
+          // no Y position cause that is handled by onDragLeave
+          const relativeX = location.current.input.clientX - rect.left;
+          const precentageFromLeft = (relativeX / rect.width) * 100;
+
+          if (precentageFromLeft > 50) {
+            setClosestDropEdge("right");
+          } else if (precentageFromLeft <= 50) {
+            setClosestDropEdge("left");
+          }
+        },
+
+        onDragLeave: () => {
+          setClosestDropEdge(null);
+        },
+
+        onDrop: () => {
+          setClosestDropEdge(null);
+        },
       }),
 
       autoScrollForElements({
@@ -193,11 +222,16 @@ export const List = memo(({ list_id }: ListProps) => {
     // NOTE: List wrapper div
     <div ref={listWrapperRef}>
       <div
-        className={`rounded-md bg-background-secondary flex flex-col min-w-[270px] max-w-[270px] h-fit text-foreground ${isDragAboutToStart && "opacity-50"}`}
+        className={`relative rounded-md bg-background-secondary flex flex-col min-w-[270px] max-w-[270px] h-fit text-foreground ${isDragAboutToStart && "opacity-50"} ${listCardDragOver ? "bg-border" : ""}`}
         ref={listRef}
       >
+        {/* Dropable Edge Hint area left*/}
+        <div
+          className={`z-10 absolute left-[-7px] h-full w-[2px] bg-blue-300 ${closestDropEdge === "left" ? "opacity-100" : "opacity-0"}`}
+        ></div>
+
         {/* NOTE: List Title */}
-        <div className={`${listCardDragOver ? "bg-border" : ""} pt-2`}>
+        <div className={` pt-2`}>
           <TextareaAutoresize
             title={list.title}
             outlineOnDoubleClick
@@ -230,6 +264,11 @@ export const List = memo(({ list_id }: ListProps) => {
             listCardsDataOrdered[listCardsDataOrdered.length - 1]?.id
           }
         />
+
+        {/* Dropable Edge Hint area right*/}
+        <div
+          className={`z-10 absolute right-[-7px] h-full w-[2px] bg-blue-300 ${closestDropEdge === "right" ? "opacity-100" : "opacity-0"}`}
+        ></div>
       </div>
     </div>
   );
