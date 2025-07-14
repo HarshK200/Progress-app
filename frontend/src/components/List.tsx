@@ -17,6 +17,8 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import invariant from "tiny-invariant";
+import { Ellipsis, SquarePen } from "lucide-react";
+import { ListCardEditMenu } from "@/components/ListCardEditMenu";
 
 interface ListProps {
   list_id: string;
@@ -26,12 +28,13 @@ export const List = memo(({ list_id }: ListProps) => {
   const [list, setList] = useList(list_id);
   if (!list) {
     return (
-      <div className="flex flex-col min-w-[270px] max-w-[270px] text-foreground animate-pulse">
+      <div className="flex flex-col min-w-[270px] text-foreground animate-pulse">
         Loding...
       </div>
     );
   }
 
+  // NOTE: drag'n drop logic
   const listCardsDataMap = useListCardGroup(list.card_ids);
   const listCardsDataOrdered: main.ListCard[] = [];
   if (list.card_ids.length > 0) {
@@ -56,7 +59,6 @@ export const List = memo(({ list_id }: ListProps) => {
     }
   }
 
-  // listcard drag and drop logic
   const setCards = useSetListCards();
   const listRef = useRef<HTMLDivElement | null>(null);
   const cardsContainerRef = useRef<HTMLDivElement | null>(null);
@@ -386,6 +388,14 @@ export const List = memo(({ list_id }: ListProps) => {
     );
   }, [closestDropEdge, list]);
 
+  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
+  const [isCardEditMenuOpen, setIsCardEditMenuOpen] = useState(false);
+  const [cardEditMenuData, setCardEditMenuData] = useState<{
+    card: main.ListCard;
+    clientX: number;
+    clientY: number;
+  } | null>(null);
+
   return (
     // NOTE: List wrapper div
     <div ref={listWrapperRef}>
@@ -398,8 +408,8 @@ export const List = memo(({ list_id }: ListProps) => {
           className={`z-10 absolute left-[-7px] h-full w-[2px] bg-blue-300 ${closestDropEdge === "left" ? "opacity-100" : "opacity-0"}`}
         ></div>
 
-        {/* NOTE: List Title */}
-        <div className={` pt-2`}>
+        <div className="flex relative pt-2">
+          {/* List Title */}
           <TextareaAutoresize
             title={list.title}
             outlineOnDoubleClick
@@ -408,23 +418,48 @@ export const List = memo(({ list_id }: ListProps) => {
             }}
             className={`font-bold mx-4`}
           />
+
+          {/* Edit Menu */}
+          <Ellipsis
+            className="mx-4 cursor-pointer"
+            onClick={() => setIsEditMenuOpen((prev) => !prev)}
+          />
+
+          {isEditMenuOpen && <div className="absolute bg-background">Hi</div>}
         </div>
 
-        {/* NOTE: List Cards */}
+        {/* List Cards */}
         <div
           className={cn(
-            `max-h-[80vh] overflow-y-auto ${listCardDragOver && "bg-border"} flex flex-col px-2 py-2 scrollbar-thin scrollbar-thumb-background-secondary scrollbar-track-transparent`,
+            `max-h-[80vh] overflow-y-auto ${listCardDragOver && "bg-border"} flex flex-col px-2 py-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent`,
             list.classname,
           )}
           ref={cardsContainerRef}
         >
           {listCardsDataOrdered.map((card) => {
             if (!card) return null;
-            return <ListCard key={card.id} listcard_id={card.id} />;
+            return (
+              <ListCard
+                key={card.id}
+                listcard_id={card.id}
+                setIsCardEditMenuOpen={setIsCardEditMenuOpen}
+                setCardEditMenuData={setCardEditMenuData}
+              />
+            );
           })}
         </div>
 
-        {/* NOTE: Add List Card Button */}
+        {/* ListCard Edit menu (This is here because overflow-y-auto was causing weird behaviour with absolute positioning) */}
+        {isCardEditMenuOpen && (
+          <ListCardEditMenu
+            editMenuData={cardEditMenuData}
+            setIsCardEditMenuOpen={setIsCardEditMenuOpen}
+            setCardEditMenuData={setCardEditMenuData}
+            relativeContainerRef={listRef}
+          />
+        )}
+
+        {/* Add List Card Button */}
         <AddNewCard
           ref={addNewBtnRef}
           list_id={list.id}

@@ -3,11 +3,37 @@ import { main } from "@wailsjs/go/models";
 import { Trash } from "lucide-react";
 
 interface ListCardEditMenuProps {
-  listcard: main.ListCard;
+  editMenuData: {
+    card: main.ListCard;
+    clientX: number;
+    clientY: number;
+  } | null;
+  setIsCardEditMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setCardEditMenuData: React.Dispatch<
+    React.SetStateAction<{
+      card: main.ListCard;
+      clientX: number;
+      clientY: number;
+    } | null>
+  >;
+  relativeContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }
-export const ListCardEditMenu = ({ listcard }: ListCardEditMenuProps) => {
+export const ListCardEditMenu = ({
+  editMenuData,
+  setIsCardEditMenuOpen,
+  setCardEditMenuData,
+  relativeContainerRef,
+}: ListCardEditMenuProps) => {
+  if (!editMenuData || !relativeContainerRef.current) return null;
+
+  const listcard = editMenuData.card;
   const setListCards = useSetListCards();
   const [list, setList] = useList(listcard.list_id);
+
+  const relativeContainer = relativeContainerRef.current;
+  const containerRect = relativeContainer?.getBoundingClientRect();
+  const relativeX = editMenuData.clientX - containerRect.left;
+  const relativeY = editMenuData.clientY - containerRect.top;
 
   function handleDelete() {
     if (!list) return;
@@ -45,14 +71,24 @@ export const ListCardEditMenu = ({ listcard }: ListCardEditMenuProps) => {
         };
       }
 
+      // cleanup the open edit menu
+      setIsCardEditMenuOpen(false);
+      setCardEditMenuData(null);
+
       return newListCards;
     });
   }
 
   return (
-    <div className="z-10 absolute left-10 bg-background border-[1px] border-border rounded-md px-3 py-2 w-[150px]">
+    <div
+      className="z-10 absolute bg-background border-[1px] border-border rounded-md w-[150px]"
+      style={{
+        top: relativeY,
+        left: relativeX,
+      }}
+    >
       <button
-        className="flex items-center gap-2 text-red-400"
+        className="flex px-3 py-2 items-center gap-2 text-red-400 w-full h-full"
         onClick={handleDelete}
       >
         <Trash size={18} />
