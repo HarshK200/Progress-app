@@ -86,6 +86,9 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
           // card dragging
           const cardDragging = source.data.card as main.ListCard;
 
+          // NOTE: Edge case: when the cardDragging and card are the same
+          if (cardDragging.id === card.id) return;
+
           // card dragging list
           const cardDraggingList = source.data.list as main.List;
           const setCardDraggingList = source.data.setList as (
@@ -103,14 +106,11 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             });
 
             setCards((prev) => {
-              const updatedCards = { ...prev! };
+              if (!prev) return undefined;
+              const updatedCards = { ...prev };
 
-              // NOTE: Edge case 1 : when dropping card on the same position
-              // NOTE: Edge case 2 : when the cardDragging and card are the same
-              if (
-                card.prev_card_id === cardDragging.id ||
-                card.id === cardDragging.id
-              ) {
+              // NOTE: Edge case: when dropping card on the same position
+              if (card.prev_card_id === cardDragging.id) {
                 return updatedCards;
               }
 
@@ -187,18 +187,18 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
                 };
               }
 
+              // card dropped-on update
+              updatedCards[card.id] = {
+                ...card,
+                prev_card_id: cardDragging.id,
+              };
+
               // dropping card update
               updatedCards[cardDragging.id] = {
                 ...cardDragging,
                 prev_card_id: card.prev_card_id,
                 next_card_id: card.id,
                 list_id: card.list_id,
-              };
-
-              // card dropped-on
-              updatedCards[card.id] = {
-                ...card,
-                prev_card_id: cardDragging.id,
               };
 
               return updatedCards;
@@ -216,6 +216,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
             setCards((prev) => {
               const updatedCards = { ...prev! };
 
+              // NOTE: Edge case when card dropping is in the same position
               if (
                 card.next_card_id === cardDragging.id ||
                 card.id === cardDragging.id
@@ -223,6 +224,7 @@ export const ListCard = memo(({ listcard_id }: ListCardProps) => {
                 return updatedCards;
               }
 
+              // NOTE: swap edge case
               if (
                 cardDragging.prev_card_id === card.id ||
                 cardDragging.next_card_id === card.id

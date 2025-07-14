@@ -30,12 +30,12 @@
 - [x] Make an empty list also dropTarget for listcard
 - [x] Make Sidebar skeleton UI
 - [x] Implement scalling for Listcards(when dragging and dropping)
+- [x] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
 
-- [ ] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
+- [ ] Edit menu to delete list.
 
 - [ ] Add (Ctrl + s) to save (also show a read icon on bottom right when not saved)
-- [ ] Edit menu to delete list.
-- [ ] Edit menu to delete board.
+- [ ] Right click menu to delete board.
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
 - [ ] Add Skeleton loading ui (just use tailwind animate-pulse)

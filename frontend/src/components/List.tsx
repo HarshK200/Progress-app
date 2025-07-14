@@ -1,7 +1,12 @@
 import { cn } from "@/lib/utils";
 import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
-import { useList, useListCardGroup, useSetListCards } from "@/store";
+import {
+  useList,
+  useListCardGroup,
+  useSetListCards,
+  useSetLists,
+} from "@/store";
 import { memo, useEffect, useRef, useState } from "react";
 import { AddNewCard } from "@/components/AddNewCard";
 import { main } from "@wailsjs/go/models";
@@ -26,8 +31,9 @@ export const List = memo(({ list_id }: ListProps) => {
       </div>
     );
   }
-  let listCardsDataMap = useListCardGroup(list.card_ids);
-  let listCardsDataOrdered: main.ListCard[] = [];
+
+  const listCardsDataMap = useListCardGroup(list.card_ids);
+  const listCardsDataOrdered: main.ListCard[] = [];
   if (list.card_ids.length > 0) {
     let currentCard = listCardsDataMap[list.card_ids[0]];
 
@@ -62,6 +68,7 @@ export const List = memo(({ list_id }: ListProps) => {
   const [closestDropEdge, setClosestDropEdge] = useState<
     "left" | "right" | null
   >(null);
+  const setLists = useSetLists();
 
   useEffect(() => {
     const listElement = listRef.current;
@@ -76,14 +83,10 @@ export const List = memo(({ list_id }: ListProps) => {
     return combine(
       draggable({
         element: listElement,
-
-        canDrag: ({ input }) => {
-          return true;
-        },
         getInitialData: () => {
           return { type: "list", list: list };
         },
-        onGenerateDragPreview({ nativeSetDragImage }) {
+        onGenerateDragPreview() {
           setDragIsAboutToStart(true);
         },
         onDragStart: () => {
@@ -167,7 +170,7 @@ export const List = memo(({ list_id }: ListProps) => {
         },
       }),
 
-      // NOTE: decides which edge to drop at left | right
+      // NOTE: drop for lists
       dropTargetForElements({
         element: listElementWrapper,
 
@@ -176,6 +179,7 @@ export const List = memo(({ list_id }: ListProps) => {
           return false;
         },
 
+        // NOTE: decides which edge to drop at left | right
         onDrag: ({ location, source }) => {
           const listDragging = source.data.list as main.List;
           if (listDragging.id === list.id) {
@@ -199,7 +203,171 @@ export const List = memo(({ list_id }: ListProps) => {
           setClosestDropEdge(null);
         },
 
-        onDrop: () => {
+        onDrop: ({ source }) => {
+          const listDragging = source.data.list as main.List;
+
+          // NOTE: Edge case: when the listDragging and list are the same
+          if (closestDropEdge === null || listDragging.id === list.id) return;
+
+          setLists((prev) => {
+            if (!prev) return undefined;
+            const updatedLists = { ...prev };
+
+            // for left drop
+            if (closestDropEdge === "left") {
+              // NOTE: Edge case: when dropping list on the same position
+              if (listDragging.id === list.prev_list_id) {
+                return updatedLists;
+              }
+
+              // NOTE: Edge case: swapping two lists
+              if (
+                listDragging.next_list_id === list.id ||
+                listDragging.prev_list_id === list.id
+              ) {
+                updatedLists[listDragging.id] = {
+                  ...updatedLists[listDragging.id],
+                  prev_list_id: list.prev_list_id,
+                  next_list_id: list.id,
+                };
+
+                updatedLists[list.id] = {
+                  ...updatedLists[list.id],
+                  prev_list_id: listDragging.id,
+                  next_list_id: listDragging.next_list_id,
+                };
+
+                if (list.prev_list_id)
+                  updatedLists[list.prev_list_id] = {
+                    ...updatedLists[list.prev_list_id],
+                    next_list_id: listDragging.id,
+                  };
+
+                if (listDragging.next_list_id)
+                  updatedLists[listDragging.next_list_id] = {
+                    ...updatedLists[listDragging.next_list_id],
+                    prev_list_id: list.id,
+                  };
+
+                return updatedLists;
+              }
+
+              // =========== Dragging list updates ===============
+
+              // dragging list's prev update
+              if (listDragging.prev_list_id)
+                updatedLists[listDragging.prev_list_id] = {
+                  ...updatedLists[listDragging.prev_list_id],
+                  next_list_id: listDragging.next_list_id,
+                };
+
+              // dragging list's next update
+              if (listDragging.next_list_id)
+                updatedLists[listDragging.next_list_id] = {
+                  ...updatedLists[listDragging.next_list_id],
+                  prev_list_id: listDragging.prev_list_id,
+                };
+
+              // =========== Dropping list updates ===============
+              if (list.prev_list_id)
+                updatedLists[list.prev_list_id] = {
+                  ...updatedLists[list.prev_list_id],
+                  next_list_id: listDragging.id,
+                };
+
+              // list dropped-on update
+              updatedLists[list.id] = {
+                ...updatedLists[list.id],
+                prev_list_id: listDragging.id,
+              };
+
+              // list dragging update
+              updatedLists[listDragging.id] = {
+                ...updatedLists[listDragging.id],
+                prev_list_id: list.prev_list_id,
+                next_list_id: list.id,
+              };
+            }
+
+            // For right drop
+            else if (closestDropEdge === "right") {
+              // NOTE: Edge casea: when dropping list on the same position
+              if (listDragging.id === list.next_list_id) {
+                return updatedLists;
+              }
+
+              // NOTE: Edge case: swapping two lists
+              if (
+                listDragging.next_list_id === list.id ||
+                listDragging.prev_list_id === list.id
+              ) {
+                updatedLists[listDragging.id] = {
+                  ...updatedLists[listDragging.id],
+                  prev_list_id: list.id,
+                  next_list_id: list.next_list_id,
+                };
+
+                updatedLists[list.id] = {
+                  ...updatedLists[list.id],
+                  prev_list_id: listDragging.prev_list_id,
+                  next_list_id: listDragging.id,
+                };
+
+                if (listDragging.prev_list_id)
+                  updatedLists[listDragging.prev_list_id] = {
+                    ...updatedLists[listDragging.prev_list_id],
+                    next_list_id: list.id,
+                  };
+
+                if (list.next_list_id)
+                  updatedLists[list.next_list_id] = {
+                    ...updatedLists[list.next_list_id],
+                    prev_list_id: listDragging.id,
+                  };
+
+                return updatedLists;
+              }
+
+              // =========== Dragging list updates ===============
+
+              // dragging list's prev update
+              if (listDragging.prev_list_id)
+                updatedLists[listDragging.prev_list_id] = {
+                  ...updatedLists[listDragging.prev_list_id],
+                  next_list_id: listDragging.next_list_id,
+                };
+
+              // draggins list's next update
+              if (listDragging.next_list_id)
+                updatedLists[listDragging.next_list_id] = {
+                  ...updatedLists[listDragging.next_list_id],
+                  prev_list_id: listDragging.prev_list_id,
+                };
+
+              // =========== Dropping list updates ===============
+              if (list.next_list_id)
+                updatedLists[list.next_list_id] = {
+                  ...updatedLists[list.next_list_id],
+                  prev_list_id: listDragging.id,
+                };
+
+              // list dropped-on update
+              updatedLists[list.id] = {
+                ...updatedLists[list.id],
+                next_list_id: listDragging.id,
+              };
+
+              // list dragging update
+              updatedLists[listDragging.id] = {
+                ...updatedLists[listDragging.id],
+                prev_list_id: list.id,
+                next_list_id: list.next_list_id,
+              };
+            }
+
+            return updatedLists;
+          });
+
           setClosestDropEdge(null);
         },
       }),
@@ -216,7 +384,7 @@ export const List = memo(({ list_id }: ListProps) => {
         },
       }),
     );
-  });
+  }, [closestDropEdge, list]);
 
   return (
     // NOTE: List wrapper div
