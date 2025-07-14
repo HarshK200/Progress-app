@@ -51,9 +51,9 @@ export const ListCardEditMenu = ({
       if (!prev) return undefined;
 
       // remove the list card from listCardsAtom
-      const newListCards = Object.fromEntries(
-        Object.entries(prev).filter(([_, card]) => card.id !== listcard.id),
-      );
+      const newListCards = { ...prev };
+
+      delete newListCards[listcard.id];
 
       // update the prevCard link (if exists)
       if (listcard.prev_card_id) {

@@ -32,8 +32,7 @@
 - [x] Implement scalling for Listcards(when dragging and dropping)
 - [x] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
 - [x] BUG FIX: The EditMenu for listcard being cropped by overflow-y-auto fixed
-
-- [ ] Edit menu to delete list.
+- [x] Edit menu to delete list.
 
 - [ ] Add (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 - [ ] Right click menu to delete board.

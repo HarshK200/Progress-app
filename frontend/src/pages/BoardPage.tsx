@@ -1,7 +1,8 @@
 import { AddNewList } from "@/components/AddNewList";
 import { List } from "@/components/List";
-import { useBoardsValue, useListGroup, useLists } from "@/store";
+import { useBoardsValue, useListGroup } from "@/store";
 import { main } from "@wailsjs/go/models";
+import { useMemo } from "react";
 
 interface BoardPageProps {
   board_id: string;
@@ -9,7 +10,12 @@ interface BoardPageProps {
 
 const BoardPage = ({ board_id }: BoardPageProps) => {
   const boards = useBoardsValue();
-  const listsDataMap = useListGroup(boards?.[board_id].list_ids ?? []);
+  const list_ids = useMemo(
+    () => boards?.[board_id]?.list_ids ?? [],
+    [boards, board_id],
+  );
+  const listsDataMap = useListGroup(list_ids);
+
   // loading skeleton UI
   if (!boards) {
     return (
@@ -60,7 +66,7 @@ const BoardPage = ({ board_id }: BoardPageProps) => {
       {/* Add New List */}
       <AddNewList
         board_id={board_id}
-        prev_list_id={orderedLists[orderedLists.length - 1].id}
+        prev_list_id={orderedLists[orderedLists.length - 1]?.id}
       />
     </main>
   );

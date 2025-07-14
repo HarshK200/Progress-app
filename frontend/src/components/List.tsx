@@ -17,8 +17,9 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import invariant from "tiny-invariant";
-import { Ellipsis, SquarePen } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { ListCardEditMenu } from "@/components/ListCardEditMenu";
+import { ListEditMenu } from "@/components/ListEditMenu";
 
 interface ListProps {
   list_id: string;
@@ -425,7 +426,7 @@ export const List = memo(({ list_id }: ListProps) => {
             onClick={() => setIsEditMenuOpen((prev) => !prev)}
           />
 
-          {isEditMenuOpen && <div className="absolute bg-background">Hi</div>}
+          {isEditMenuOpen && <ListEditMenu list={list} />}
         </div>
 
         {/* List Cards */}
