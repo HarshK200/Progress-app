@@ -7,14 +7,17 @@ import (
 
 const LOCAL_FILEDATA_PATH = "./"
 
-// Writes the given struct to json file with the given filename
-func WriteJson(filename string, data any) error {
+// Writes the given struct to json file with the given filename.
+
+// NOTE: the filename given MUST NOT end with .json or start with "./some/path" becuase
+// that is handled by WriteJSON() internally
+func WriteJSON(filename string, data any) error {
 	jsonBytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	file, err := os.Create(filename + ".json")
+	file, err := os.Create("./" + filename + ".json")
 	if err != nil {
 		return err
 	}
@@ -29,8 +32,11 @@ func WriteJson(filename string, data any) error {
 }
 
 // Reads the json from given filename and writes it to the dest pointer of type T
+
+// NOTE: the filename given MUST NOT end with .json or start with "./some/path" becuase
+// that is handled by ReadJsonFromFile() internally
 func ReadJsonFromFile[T any](filename string, dest *T) error {
-	jsonByes, err := os.ReadFile(filename)
+	jsonByes, err := os.ReadFile("./" + filename + ".json")
 	if err != nil {
 		return err
 	}

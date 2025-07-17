@@ -28,15 +28,21 @@
 - [x] Implement the drop on bottom functionality for dnd list cards (i just asked chatgpt for drop on top inverse)
 - [x] POLISH: Adjust for the gap-1.5 i.e. 6px when dropping (i did as much as i could)
 - [x] Make an empty list also dropTarget for listcard
-- [x] Make Sidebar skeleton UI
+- [x] Add Sidebar skeleton loading UI
 - [x] Implement scalling for Listcards(when dragging and dropping)
 - [x] Implement drag and drop functionality like trello for Lists (use pragmatic dnd)
 - [x] BUG FIX: The EditMenu for listcard being cropped by overflow-y-auto fixed
 - [x] Edit menu to delete list.
+- [x] Implement (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 
-- [ ] Add (Ctrl + s) to save (also show a read icon on bottom right when not saved)
+- [ ] Make it so every state change is an action (with ctrl + z)
+    State changes:
+    - update list, listCard, board
 - [ ] Right click menu to delete board.
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
-- [ ] Add Skeleton loading ui (just use tailwind animate-pulse)
+- [ ] Add Skeleton loading ui for board lists and listcards
 - [ ] Add priority colors
+- [ ] Polish up the edit-menu for list and list-cards both
+        - make it so that prev open one closes when goes out of focus
+        - also upon clicking somewhere randomly also closes the edit-menu

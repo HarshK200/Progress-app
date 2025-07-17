@@ -55,7 +55,7 @@ const BoardPage = ({ board_id }: BoardPageProps) => {
   }
 
   return (
-    <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-background-secondary scrollbar-track-transparent">
+    <main className="overflow-y-hidden w-full min-h-screen flex p-4 gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-background-secondary scrollbar-track-transparent">
       {
         /* Lists */
         orderedLists.map((list) => {

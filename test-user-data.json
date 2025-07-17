@@ -3,23 +3,31 @@
     "251ab92d-ccff-4e74-ae4e-619ebb3b1752": {
       "id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "name": "Programming board",
-      "list_ids": ["1", "2", "3", "4"]
+      "list_ids": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
     }
   },
-
   "lists": {
     "1": {
       "id": "1",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "title": "Todo",
-      "card_ids": ["564799fc-798a-4994-b341-97ba70e3724a"],
+      "classname": "",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "card_ids": [
+        "564799fc-798a-4994-b341-97ba70e3724a"
+      ],
       "prev_list_id": null,
       "next_list_id": "2"
     },
     "2": {
       "id": "2",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "title": "Doing",
+      "classname": "",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
         "171883c6-621b-4fcc-b01b-0586dc2b0250",
         "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
@@ -30,8 +38,9 @@
     },
     "3": {
       "id": "3",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "title": "Done",
+      "classname": "",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
         "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
         "62e000f2-16cc-43c4-b186-5cd714142f1e"
@@ -41,75 +50,86 @@
     },
     "4": {
       "id": "4",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "title": "BackBurner",
+      "classname": "",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [],
       "prev_list_id": "3",
       "next_list_id": null
     }
   },
-
   "list_cards": {
-    "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2": {
-      "id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "3",
-      "title": "List component",
-      "is_done": true,
-      "prev_card_id": null,
-      "next_card_id": "62e000f2-16cc-43c4-b186-5cd714142f1e"
-    },
     "171883c6-621b-4fcc-b01b-0586dc2b0250": {
       "id": "171883c6-621b-4fcc-b01b-0586dc2b0250",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "2",
       "title": "Button to add a new card",
       "is_done": false,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "2",
       "prev_card_id": null,
       "next_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e"
     },
-    "564799fc-798a-4994-b341-97ba70e3724a": {
-      "id": "564799fc-798a-4994-b341-97ba70e3724a",
+    "19e300f2-16cc-43c4-b186-5cd714142f1e": {
+      "id": "19e300f2-16cc-43c4-b186-5cd714142f1e",
+      "title": "Darg and drop functionality",
+      "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "1",
-      "title": "Custom checkbox",
-      "is_done": false,
       "prev_card_id": null,
       "next_card_id": null
     },
-    "19e300f2-16cc-43c4-b186-5cd714142f1e": {
-      "id": "19e300f2-16cc-43c4-b186-5cd714142f1e",
+    "564799fc-798a-4994-b341-97ba70e3724a": {
+      "id": "564799fc-798a-4994-b341-97ba70e3724a",
+      "title": "Custom checkbox",
+      "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "1",
-      "title": "Darg and drop functionality",
-      "is_done": false
-    },
-    "62e000f2-16cc-43c4-b186-5cd714142f1e": {
-      "id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "3",
-      "title": "Figure out the data structure for serialization",
-      "is_done": true,
-      "prev_card_id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
+      "prev_card_id": null,
       "next_card_id": null
     },
     "60kw20dk2-16cc-43c4-b186-5cd714142f1e": {
       "id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "2",
       "title": "Write the board state to file and read it to state",
       "is_done": false,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "2",
       "prev_card_id": "171883c6-621b-4fcc-b01b-0586dc2b0250",
       "next_card_id": "6969e000f2-16cc-43c4-b186-5cd714142f1e"
     },
+    "62e000f2-16cc-43c4-b186-5cd714142f1e": {
+      "id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
+      "title": "Figure out the data structure for serialization",
+      "is_done": true,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "3",
+      "prev_card_id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
+      "next_card_id": null
+    },
+    "65e99b3c-7492-4927-b788-a7d1fdb96f67": {
+      "id": "65e99b3c-7492-4927-b788-a7d1fdb96f67",
+      "title": "Now new\n\n",
+      "is_done": false,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "60090be1-0c76-4a8b-bf7d-64284db0eb76",
+      "prev_card_id": null,
+      "next_card_id": null
+    },
     "6969e000f2-16cc-43c4-b186-5cd714142f1e": {
       "id": "6969e000f2-16cc-43c4-b186-5cd714142f1e",
-      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "2",
       "title": "Install react-router and setup the sidebar",
       "is_done": false,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "2",
       "prev_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
       "next_card_id": null
+    },
+    "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2": {
+      "id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
+      "title": "List component",
+      "is_done": true,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "3",
+      "prev_card_id": null,
+      "next_card_id": "62e000f2-16cc-43c4-b186-5cd714142f1e"
     }
   }
 }

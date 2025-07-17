@@ -3,6 +3,7 @@ import BoardPage from "@/pages/BoardPage";
 import { useHydrateUserDataState } from "@/hooks/useHydrateUserData";
 import Sidebar from "./components/Sidebar";
 import { useBoardOpenIdValue } from "./store";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   // handles Keybinds mounting on component load, and unmount on unload.
@@ -15,6 +16,7 @@ const App = () => {
       <Sidebar />
 
       <BoardPage board_id={boardOpen} />
+      <Toaster />
     </div>
   );
 };

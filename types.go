@@ -39,3 +39,12 @@ type GetUserDataResponse struct {
 	StatusCode int      `json:"status_code"`
 	Data       UserData `json:"user_data"`
 }
+
+type WriteUserDataRequest struct {
+	Data UserData `json:"user_data"`
+}
+
+type WriteUserDataResponse struct {
+	Status     string `json:"status"`
+	StatusCode int    `json:"status_code"`
+}

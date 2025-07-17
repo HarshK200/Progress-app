@@ -5,3 +5,5 @@ import {main} from '../models';
 export function GetUserData():Promise<main.GetUserDataResponse>;
 
 export function Greet(arg1:string):Promise<string>;
+
+export function WriteUserData(arg1:main.WriteUserDataRequest):Promise<main.WriteUserDataResponse>;

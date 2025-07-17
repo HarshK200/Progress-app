@@ -9,6 +9,7 @@ import { useState } from "react";
 import { main } from "@wailsjs/go/models";
 import { cn } from "@/lib/utils";
 import { AddNewBoard } from "./AddNewBoard";
+import { BoardContextMenu } from "./BoardContextMenu";
 
 const Sidebar = () => {
   const [sidebarOpen, setSideBarOpen] = useSidebarAtom();
@@ -45,7 +46,7 @@ const Sidebar = () => {
 
       {/* Re-tractable sidebar */}
       <aside
-        className={`bg-background h-full p-3 flex flex-1 border-r-[1px] border-r-border ${transitionEnabled ? "transition-all" : ""} ${sidebarOpen ? "w-64 opacity-100" : "px-0 m-0 w-0 translate-x-[-200px] opacity-0"}`}
+        className={`overflow-y-auto bg-background h-[100vh] p-3 flex flex-1 border-r-[1px] border-r-border ${transitionEnabled ? "transition-all" : ""} ${sidebarOpen ? "w-64 opacity-100" : "px-0 m-0 w-0 translate-x-[-200px] opacity-0"} scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent`}
       >
         {/* Boards Group */}
         <SidebarGroup name="Boards" classname="relative">
@@ -97,7 +98,6 @@ const SidebarGroup = ({
 interface SidebarBoardGroupItemProps {
   board: main.Board;
 }
-// TODO: turn these into buttons that on click changes boardOpenStateAtom
 const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   const [boardOpenId, setBoardOpenId] = useBoardOpenId();
   const isCurrentBoardOpen = board.id === boardOpenId;
@@ -105,11 +105,16 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   function handleOnClick() {
     setBoardOpenId(board.id);
   }
+  function handleContextMenu(e: React.MouseEvent<HTMLLIElement>) {
+    e.preventDefault();
+    alert("Implement edit(context) menu");
+  }
 
   return (
     <li
-      className={`mx-2 my-0.5 px-4 py-1 ${isCurrentBoardOpen ? "bg-background-secondary" : ""} hover:bg-background-secondary rounded-md cursor-pointer`}
+      className={`relative mx-2 my-0.5 px-4 py-1 ${isCurrentBoardOpen ? "bg-background-secondary" : ""} hover:bg-background-secondary rounded-md cursor-pointer`}
       onClick={handleOnClick}
+      onContextMenu={handleContextMenu}
     >
       {board.name}
     </li>

@@ -10,6 +10,10 @@ export function useHydrateUserDataState() {
 
   useEffect(() => {
     GetUserData().then((data) => {
+      if (data.status_code !== 200) {
+        console.error(data.status);
+      }
+
       setBoards(data.user_data.boards);
       setLists(data.user_data.lists);
       setListCards(data.user_data.list_cards);

@@ -9,3 +9,7 @@ export function GetUserData() {
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
+
+export function WriteUserData(arg1) {
+  return window['go']['main']['App']['WriteUserData'](arg1);
+}
