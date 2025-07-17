@@ -1,7 +1,7 @@
 # Progress-app (kanban board application)
 
-# DEMO:
-![progress-project](https://github.com/user-attachments/assets/003eba5e-bcc5-4089-9832-46da7409aa73)
+### DEMO:
+![final](https://github.com/user-attachments/assets/47b50506-55ea-4254-bd0a-ca1242f9e20f)
 
 
 ## TODO:
