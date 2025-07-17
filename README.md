@@ -1,5 +1,9 @@
 # Progress-app (kanban board application)
 
+# DEMO:
+![progress-project](https://github.com/user-attachments/assets/003eba5e-bcc5-4089-9832-46da7409aa73)
+
+
 ## TODO:
 
 - [x] Basic UI setup
