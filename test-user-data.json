@@ -9,6 +9,13 @@
         "3",
         "4"
       ]
+    },
+    "7484e14c-e953-4902-924a-9251440be23b": {
+      "id": "7484e14c-e953-4902-924a-9251440be23b",
+      "name": "New Board",
+      "list_ids": [
+        "e8a4da4a-af1c-4459-aecb-5c25f6911d49"
+      ]
     }
   },
   "lists": {
@@ -18,7 +25,8 @@
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
-        "564799fc-798a-4994-b341-97ba70e3724a"
+        "62e000f2-16cc-43c4-b186-5cd714142f1e",
+        "bba55f32-e670-4656-9ed0-e401269dc1f0"
       ],
       "prev_list_id": null,
       "next_list_id": "2"
@@ -31,7 +39,8 @@
       "card_ids": [
         "171883c6-621b-4fcc-b01b-0586dc2b0250",
         "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
-        "6969e000f2-16cc-43c4-b186-5cd714142f1e"
+        "6969e000f2-16cc-43c4-b186-5cd714142f1e",
+        "564799fc-798a-4994-b341-97ba70e3724a"
       ],
       "prev_list_id": "1",
       "next_list_id": "3"
@@ -43,7 +52,7 @@
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
         "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
-        "62e000f2-16cc-43c4-b186-5cd714142f1e"
+        "fa7abce1-63c6-44a9-a24e-bf6bafa257c4"
       ],
       "prev_list_id": "2",
       "next_list_id": "4"
@@ -53,9 +62,31 @@
       "title": "BackBurner",
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "card_ids": [],
+      "card_ids": [
+        "39ee7ec0-ab7b-4670-b408-7c1714a54798"
+      ],
       "prev_list_id": "3",
       "next_list_id": null
+    },
+    "e8a4da4a-af1c-4459-aecb-5c25f6911d49": {
+      "id": "e8a4da4a-af1c-4459-aecb-5c25f6911d49",
+      "title": "A new list",
+      "classname": "",
+      "board_id": "7484e14c-e953-4902-924a-9251440be23b",
+      "card_ids": [
+        "1852892b-c97f-45e8-bd50-ef86a1c89215"
+      ],
+      "prev_list_id": null,
+      "next_list_id": null
+    },
+    "undefined": {
+      "id": "",
+      "title": "",
+      "classname": "",
+      "board_id": "",
+      "card_ids": null,
+      "prev_list_id": null,
+      "next_list_id": "e8a4da4a-af1c-4459-aecb-5c25f6911d49"
     }
   },
   "list_cards": {
@@ -68,6 +99,15 @@
       "prev_card_id": null,
       "next_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e"
     },
+    "1852892b-c97f-45e8-bd50-ef86a1c89215": {
+      "id": "1852892b-c97f-45e8-bd50-ef86a1c89215",
+      "title": "With some new data",
+      "is_done": false,
+      "board_id": "7484e14c-e953-4902-924a-9251440be23b",
+      "list_id": "e8a4da4a-af1c-4459-aecb-5c25f6911d49",
+      "prev_card_id": null,
+      "next_card_id": null
+    },
     "19e300f2-16cc-43c4-b186-5cd714142f1e": {
       "id": "19e300f2-16cc-43c4-b186-5cd714142f1e",
       "title": "Darg and drop functionality",
@@ -77,14 +117,23 @@
       "prev_card_id": null,
       "next_card_id": null
     },
+    "39ee7ec0-ab7b-4670-b408-7c1714a54798": {
+      "id": "39ee7ec0-ab7b-4670-b408-7c1714a54798",
+      "title": "New Card",
+      "is_done": false,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "4",
+      "prev_card_id": null,
+      "next_card_id": null
+    },
     "564799fc-798a-4994-b341-97ba70e3724a": {
       "id": "564799fc-798a-4994-b341-97ba70e3724a",
       "title": "Custom checkbox",
       "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "1",
-      "prev_card_id": null,
-      "next_card_id": null
+      "list_id": "2",
+      "prev_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
+      "next_card_id": "6969e000f2-16cc-43c4-b186-5cd714142f1e"
     },
     "60kw20dk2-16cc-43c4-b186-5cd714142f1e": {
       "id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
@@ -93,16 +142,16 @@
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "2",
       "prev_card_id": "171883c6-621b-4fcc-b01b-0586dc2b0250",
-      "next_card_id": "6969e000f2-16cc-43c4-b186-5cd714142f1e"
+      "next_card_id": "564799fc-798a-4994-b341-97ba70e3724a"
     },
     "62e000f2-16cc-43c4-b186-5cd714142f1e": {
       "id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
       "title": "Figure out the data structure for serialization",
       "is_done": true,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "3",
-      "prev_card_id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
-      "next_card_id": null
+      "list_id": "1",
+      "prev_card_id": null,
+      "next_card_id": "bba55f32-e670-4656-9ed0-e401269dc1f0"
     },
     "65e99b3c-7492-4927-b788-a7d1fdb96f67": {
       "id": "65e99b3c-7492-4927-b788-a7d1fdb96f67",
@@ -119,7 +168,7 @@
       "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "2",
-      "prev_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
+      "prev_card_id": "564799fc-798a-4994-b341-97ba70e3724a",
       "next_card_id": null
     },
     "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2": {
@@ -129,7 +178,25 @@
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "3",
       "prev_card_id": null,
-      "next_card_id": "62e000f2-16cc-43c4-b186-5cd714142f1e"
+      "next_card_id": "fa7abce1-63c6-44a9-a24e-bf6bafa257c4"
+    },
+    "bba55f32-e670-4656-9ed0-e401269dc1f0": {
+      "id": "bba55f32-e670-4656-9ed0-e401269dc1f0",
+      "title": "Test card",
+      "is_done": false,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "1",
+      "prev_card_id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
+      "next_card_id": null
+    },
+    "fa7abce1-63c6-44a9-a24e-bf6bafa257c4": {
+      "id": "fa7abce1-63c6-44a9-a24e-bf6bafa257c4",
+      "title": "Another test card\n\ntest",
+      "is_done": true,
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "list_id": "3",
+      "prev_card_id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
+      "next_card_id": null
     }
   }
 }
