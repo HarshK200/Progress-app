@@ -1,7 +1,9 @@
 # Progress-app (kanban board application)
 
 ### DEMO:
-![final](https://github.com/user-attachments/assets/47b50506-55ea-4254-bd0a-ca1242f9e20f)
+
+![progress-app-demo-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/0ff33df3-0f4a-47fd-af4b-726583540896)
+
 
 
 ## TODO:
