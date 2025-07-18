@@ -5,7 +5,6 @@
 ![progress-app-demo-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/0ff33df3-0f4a-47fd-af4b-726583540896)
 
 
-
 ## TODO:
 
 - [x] Basic UI setup
@@ -42,10 +41,16 @@
 - [x] Implement (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 
 - [ ] Make it so every state change is an action (with ctrl + z)
-    State changes:
-    - update list, listCard, board
-    - delete list, listCard, board
-- [ ] Make sure Any and all action that update the boards, lists, listcards state in any way flushes the redo stack on update
+    Implement UserAction for State changes:
+    - [ ] board-add-new
+    - [x] list-add-new
+    - [ ] listcard-add-new
+    - [ ] board-update
+    - [ ] list-update
+    - [ ] listcard-update
+    - [ ] board-delete
+    - [ ] list-delete
+    - [ ] listCard-delete
 
 - [ ] Right click menu to delete board.
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)

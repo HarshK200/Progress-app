@@ -58,9 +58,10 @@ export const AddNewList = ({
       return updatedBoards;
     });
 
+    // =========================== Undo-Redo stuff ===========================
+
     // NOTE: return here if this is a redo call
     if (opts.isRedo) return;
-
     // NOTE: push this action to undo history
     setUndoActions((prev) => {
       const updatedUndoActions = [...prev];
@@ -106,7 +107,6 @@ export const AddNewList = ({
 
       return updatedUndoActions;
     });
-
     // NOTE: flush the redo actions stack
     setRedoActions([]);
   }
