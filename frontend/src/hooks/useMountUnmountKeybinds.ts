@@ -118,8 +118,12 @@ export function useMountUnmountKeybinds() {
 
         setSaveLoading(false);
         saveLoading
-          ? toast.loading("Saving user data", { position: "bottom-right" })
-          : toast.success("Saved user data", { position: "bottom-right" });
+          ? toast.loading("Saving user data", {
+              position: "bottom-right",
+            })
+          : toast.success("Saved user data", {
+              position: "bottom-right",
+            });
 
         const userData: main.WriteUserDataRequest = {
           user_data: {

@@ -40,9 +40,10 @@
 - [x] Edit menu to delete list.
 - [x] Implement (Ctrl + s) to save (also show a read icon on bottom right when not saved)
 
-- [ ] Make it so every state change is an action (with ctrl + z)
-    Implement UserAction for State changes:
-    - [ ] board-add-new
+- [x] Implement Undo (with ctrl + z)
+- [x] Implement Redo (with ctrl + shift + z)
+- [ ] Make it so every state change is an action Implement UserAction for State changes:
+    - [x] board-add-new
     - [x] list-add-new
     - [ ] listcard-add-new
     - [ ] board-update

@@ -387,7 +387,7 @@ export const ListCard = memo(
             className="ml-3 my-3 rounded-md overflow-hidden"
           />
 
-          {/* ListCard Edit menu */}
+          {/* ListCard Edit Trigger */}
           <div>
             <SquarePen
               size={20}

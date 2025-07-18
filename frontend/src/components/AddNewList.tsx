@@ -23,7 +23,7 @@ export const AddNewList = ({
 
   function addNewList(opts: {
     isRedo: boolean;
-    generatedListId: string | undefined;
+    generatedListId: string | null;
   }) {
     const newListData: main.List = {
       id: opts.isRedo && opts.generatedListId ? opts.generatedListId : uuidv4(),
@@ -62,6 +62,7 @@ export const AddNewList = ({
 
     // NOTE: return here if this is a redo call
     if (opts.isRedo) return;
+
     // NOTE: push this action to undo history
     setUndoActions((prev) => {
       const updatedUndoActions = [...prev];
@@ -74,10 +75,13 @@ export const AddNewList = ({
             if (!prev) return;
 
             const updatedLists = { ...prev };
+
+            // updated the prev_list
             updatedLists[prev_list_id] = {
               ...updatedLists[prev_list_id],
               next_list_id: undefined,
             };
+            // delete the newly created list
             delete updatedLists[newListData.id];
 
             return updatedLists;
@@ -107,6 +111,7 @@ export const AddNewList = ({
 
       return updatedUndoActions;
     });
+
     // NOTE: flush the redo actions stack
     setRedoActions([]);
   }
@@ -114,7 +119,7 @@ export const AddNewList = ({
   return (
     <div
       className="flex items-center min-w-[254px] h-[48px] px-3 gap-2 cursor-pointer rounded-md bg-background-secondary hover:bg-background-secondary/50 transition-all"
-      onClick={() => addNewList({ isRedo: false, generatedListId: undefined })}
+      onClick={() => addNewList({ isRedo: false, generatedListId: null })}
     >
       <Plus />
       <span className="text-nowrap">New List</span>

@@ -9,7 +9,6 @@ import { useState } from "react";
 import { main } from "@wailsjs/go/models";
 import { cn } from "@/lib/utils";
 import { AddNewBoard } from "./AddNewBoard";
-import { BoardContextMenu } from "./BoardContextMenu";
 
 const Sidebar = () => {
   const [sidebarOpen, setSideBarOpen] = useSidebarAtom();
