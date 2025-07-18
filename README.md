@@ -44,6 +44,9 @@
 - [ ] Make it so every state change is an action (with ctrl + z)
     State changes:
     - update list, listCard, board
+    - delete list, listCard, board
+- [ ] Make sure Any and all action that update the boards, lists, listcards state in any way flushes the redo stack on update
+
 - [ ] Right click menu to delete board.
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
@@ -52,3 +55,4 @@
 - [ ] Polish up the edit-menu for list and list-cards both
         - make it so that prev open one closes when goes out of focus
         - also upon clicking somewhere randomly also closes the edit-menu
+        - Make a settings modal

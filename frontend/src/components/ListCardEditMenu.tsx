@@ -38,7 +38,7 @@ export const ListCardEditMenu = ({
   function handleDelete() {
     if (!list) return;
 
-    // remove the listcard_id from the list
+    // NOTE: remove the listcard_id from the list
     const newListCard_ids = list.card_ids.filter(
       (card_id) => card_id !== listcard.id,
     );

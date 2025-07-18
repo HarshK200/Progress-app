@@ -1,8 +1,18 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 
 export interface UserAction {
-  type: "list-update" | "listcard-update" | "board-update";
+  type:
+    | "list-update"
+    | "listcard-update"
+    | "board-update"
+    | "list-add-new"
+    | "listcard-add-new"
+    | "board-add-new"
+    | "list-delete"
+    | "listcard-delete"
+    | "board-delete";
   undoFunc: () => void;
+  redoFunc: () => void;
 }
 
 // NOTE: undo actions stack
@@ -19,14 +29,17 @@ export function useSetUndoActions() {
 }
 
 // NOTE: redo actions stack
+
+// HACK: undo-redo is not a tree here.
+// The redo stack gets flushed on every push to the undo stack.
 export const RedoActionsAtom = atom<UserAction[]>([]);
 // returns the undo stack
 export function useRedoActions() {
   return useAtom(RedoActionsAtom);
 }
 export function useRedoActionsValue() {
-  return useAtomValue(UndoActionsAtom);
+  return useAtomValue(RedoActionsAtom);
 }
 export function useSetRedoActions() {
-  return useSetAtom(UndoActionsAtom);
+  return useSetAtom(RedoActionsAtom);
 }

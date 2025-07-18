@@ -32,7 +32,7 @@ export const ListEditMenu = ({ list }: ListEditMenuProps) => {
       // delete the list
       delete updatedLists[list.id];
 
-      // remove from the board list_ids
+      // NOTE: remove from the board list_ids
       setBoard({
         ...board!,
         list_ids: board!.list_ids.filter((id) => id !== list.id),

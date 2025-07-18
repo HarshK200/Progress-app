@@ -3,41 +3,113 @@ import {
   useBoardsValue,
   useListCardsValue,
   useListsValue,
+  useRedoActions,
+  useUndoActions,
 } from "@/store";
 import { WriteUserData } from "@wailsjs/go/main/App";
 import { main } from "@wailsjs/go/models";
 import { useSetAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 export function useMountUnmountKeybinds() {
-  const keybindController = useRef<AbortController | null>(null);
   const setSideBarOpen = useSetAtom(sidebarAtom);
 
   const boards = useBoardsValue();
   const lists = useListsValue();
   const list_cards = useListCardsValue();
 
-  // Keymaps ---  TODO: load these from file
-  function handleKeyDown(e: KeyboardEvent) {
-    // NOTE: toggle sidebar
-    if (e.ctrlKey && e.key == "n") {
-      setSideBarOpen((prev) => !prev);
-    }
-  }
+  const [undoActions, setUndoActions] = useUndoActions();
+  const [redoActions, setRedoActions] = useRedoActions();
 
-  // NOTE: Bind Keymaps
+  // NOTE: Bind General Keymaps
   useEffect(() => {
-    keybindController.current = new AbortController();
+    // Keymaps ---  TODO: load these from file
+    function handleKeyDown(e: KeyboardEvent) {
+      // toggle sidebar
+      if (e.ctrlKey && e.key == "n") {
+        setSideBarOpen((prev) => !prev);
+      }
+    }
 
-    window.addEventListener("keydown", handleKeyDown, {
-      signal: keybindController.current.signal,
-    });
+    window.addEventListener("keydown", handleKeyDown);
 
-    return () => keybindController.current?.abort();
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // NOTE: bind save button
+  // NOTE: Bind undo-redo keybinds
+  useEffect(() => {
+    function handleUndoRedo(e: KeyboardEvent) {
+      // redo
+      if (e.shiftKey && e.ctrlKey && e.key.toLowerCase() === "z") {
+        if (redoActions.length <= 0) {
+          toast("Already at the lastest change", {
+            position: "bottom-right",
+            duration: 1000,
+          });
+          return;
+        }
+
+        // Call the redoFunc and push to undo stack
+        setRedoActions((prev) => {
+          const updatedRedoActions = [...prev];
+          const recentRedoAction = updatedRedoActions.pop();
+          if (!recentRedoAction) {
+            console.error("recentRedoAction is undefined");
+            return prev;
+          }
+          recentRedoAction.redoFunc();
+
+          setUndoActions((prev) => {
+            const updatedUndoActions = [...prev];
+            updatedUndoActions.push(recentRedoAction);
+
+            return updatedUndoActions;
+          });
+
+          return updatedRedoActions;
+        });
+      }
+
+      // undo
+      if (e.ctrlKey && e.key.toLowerCase() === "z" && !e.shiftKey) {
+        // NOTE: if no undo actions in the stack
+        if (undoActions.length <= 0) {
+          toast("Already at the lastest change", {
+            position: "bottom-right",
+            duration: 1000,
+          });
+          return;
+        }
+
+        // Call the undoFunc and push to redo stack
+        setUndoActions((prev) => {
+          const updatedUndoActions = [...prev];
+          const recentUndoAction = updatedUndoActions.pop();
+          if (!recentUndoAction) {
+            console.error("recentUndoAction is undefined");
+            return prev;
+          }
+          recentUndoAction.undoFunc();
+
+          setRedoActions((prev) => {
+            const updatedRedoActions = [...prev];
+            updatedRedoActions.push(recentUndoAction);
+
+            return updatedRedoActions;
+          });
+
+          return updatedUndoActions;
+        });
+      }
+    }
+
+    window.addEventListener("keydown", handleUndoRedo);
+
+    return () => window.removeEventListener("keydown", handleUndoRedo);
+  }, [undoActions, redoActions]);
+
+  // NOTE: Bind save button
   const [saveLoading, setSaveLoading] = useState(false);
   useEffect(() => {
     function handleSaveData(e: KeyboardEvent) {
