@@ -361,11 +361,11 @@ export const ListCard = memo(
         >
           {/* Dropable Area Hint Top */}
           <div
-            className={`z-10 absolute w-full h-[2px] bg-blue-300 ${closestDroppableEdge === "top" ? "opacity-100" : "opacity-0"} -top-1`}
+            className={`z-10 absolute w-full h-[2px] bg-drop-hint ${closestDroppableEdge === "top" ? "opacity-100" : "opacity-0"} -top-1`}
           >
             <Plus
               size={14}
-              className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute text-white bg-drop-hint rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
             />
           </div>
 
@@ -415,11 +415,11 @@ export const ListCard = memo(
 
           {/* Dropable Area Hint Bottom */}
           <div
-            className={`z-10 absolute w-full h-[2px] bg-blue-300 ${closestDroppableEdge === "bottom" ? "opacity-100" : "opacity-0"} -bottom-1`}
+            className={`z-10 absolute w-full h-[2px] bg-drop-hint ${closestDroppableEdge === "bottom" ? "opacity-100" : "opacity-0"} -bottom-1`}
           >
             <Plus
               size={14}
-              className="absolute text-white bg-blue-300 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute text-white bg-drop-hint rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
             />
           </div>
         </div>

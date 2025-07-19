@@ -7,8 +7,8 @@ export default {
         background: "rgba(var(--background), <alpha-value>)",
         foreground: "rgba(var(--foreground), <alpha-value>)",
         border: "rgba(var(--border), <alpha-value>)",
-        "background-secondary":
-          "rgba(var(--background-secondary), <alpha-value>)",
+        "background-secondary": "rgba(var(--background-secondary), <alpha-value>)",
+        "drop-hint": "rgba(var(--drop-hint), <alpha-value>)"
       },
     },
   },

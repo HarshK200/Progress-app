@@ -1,18 +1,63 @@
-import { useAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
+export const boardLastOpenIdAtom = atomWithStorage<string>(
+  "boardLastOpenId",
+  localStorage.getItem("boardLastOpenId") ?? "",
+);
+export function useBoardLastOpenId() {
+  return useAtom(boardLastOpenIdAtom);
+}
+export function useBoardLastOpenIdValue() {
+  return useAtomValue(boardLastOpenIdAtom);
+}
+export function useSetBoardLastOpenId() {
+  return useSetAtom(boardLastOpenIdAtom);
+}
+
 export const sidebarAtom = atomWithStorage<boolean>("isSidebarOpen", false);
-export function useSidebarAtom() {
+export function useSidebarOpen() {
   return useAtom(sidebarAtom);
 }
 
-export const boardOpenIdAtom = atomWithStorage<string>(
-  "boardOpen",
-  "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-);
-export function useBoardOpenIdValue() {
-  return useAtomValue(boardOpenIdAtom);
+interface contextMenuDataType {
+  isOpen: boolean;
+  pos: {
+    clientX: number;
+    clientY: number;
+  } | null;
+  board_id: string | null;
 }
-export function useBoardOpenId() {
-  return useAtom(boardOpenIdAtom);
+const contextMenuDataAtom = atom<contextMenuDataType>({
+  isOpen: false,
+  pos: null,
+  board_id: null,
+});
+export const contextMenuDataDervied = atom(
+  // getter
+  (get) => get(contextMenuDataAtom),
+
+  // settter
+  (get, set, updatedValue: contextMenuDataType) => {
+    function handleBlurOnClick(e: MouseEvent) {
+      if (e.button === 0) {
+        set(contextMenuDataAtom, { isOpen: false, pos: null, board_id: null });
+        window.removeEventListener("click", handleBlurOnClick);
+      }
+    }
+
+    // if opening the contextMenu add the handler to remove it Random onClick
+    const previousValue = get(contextMenuDataAtom);
+    if (updatedValue.isOpen && !previousValue.isOpen) {
+      window.addEventListener("click", handleBlurOnClick);
+    }
+
+    set(contextMenuDataAtom, updatedValue);
+  },
+);
+export function useContextMenuDataValue() {
+  return useAtomValue(contextMenuDataDervied);
+}
+export function useSetContextMenuData() {
+  return useSetAtom(contextMenuDataDervied);
 }

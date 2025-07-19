@@ -4,7 +4,6 @@
 
 ![progress-app-demo-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/0ff33df3-0f4a-47fd-af4b-726583540896)
 
-
 ## TODO:
 
 - [x] Basic UI setup
@@ -39,26 +38,30 @@
 - [x] BUG FIX: The EditMenu for listcard being cropped by overflow-y-auto fixed
 - [x] Edit menu to delete list.
 - [x] Implement (Ctrl + s) to save (also show a read icon on bottom right when not saved)
-
 - [x] Implement Undo (with ctrl + z)
 - [x] Implement Redo (with ctrl + shift + z)
-- [ ] Make it so every state change is an action Implement UserAction for State changes:
-    - [x] board-add-new
-    - [x] list-add-new
-    - [ ] listcard-add-new
-    - [ ] board-update
-    - [ ] list-update
-    - [ ] listcard-update
-    - [ ] board-delete
-    - [ ] list-delete
-    - [ ] listCard-delete
+- [x] BUG FIX: on deleting the currently openBoard. The lastOpenBoardId is not updated
 
-- [ ] Right click menu to delete board.
+- [ ] Implement Right click opens context menu on board
+  - [x] delete
+  - [ ] rename
+
+- [ ] Make it so every state change is an action Implement UserAction for State changes:
+  - [x] board-add-new
+  - [x] list-add-new
+  - [x] listcard-add-new
+  - [ ] board-delete
+  - [ ] list-delete
+  - [ ] listCard-delete
+  - [ ] board-update
+  - [ ] list-update
+  - [ ] listcard-update
+
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
 - [ ] Add Skeleton loading ui for board lists and listcards
-- [ ] Add priority colors
-- [ ] Polish up the edit-menu for list and list-cards both
-        - make it so that prev open one closes when goes out of focus
-        - also upon clicking somewhere randomly also closes the edit-menu
-        - Make a settings modal
+- [ ] Add colors to show the Priority/Urgency.
+- [ ] Polish up the edit-menu for list and list-cards both:
+  - [ ] make it so that prev open one closes when goes out of focus
+  - [ ] also upon clicking somewhere randomly also closes the edit-menu
+  - [ ] Make a settings modal

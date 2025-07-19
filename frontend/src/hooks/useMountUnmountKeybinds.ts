@@ -27,7 +27,8 @@ export function useMountUnmountKeybinds() {
     // Keymaps ---  TODO: load these from file
     function handleKeyDown(e: KeyboardEvent) {
       // toggle sidebar
-      if (e.ctrlKey && e.key == "n") {
+      if (e.ctrlKey && e.key.toLowerCase() == "n" && !e.shiftKey) {
+        e.preventDefault();
         setSideBarOpen((prev) => !prev);
       }
     }
@@ -113,7 +114,11 @@ export function useMountUnmountKeybinds() {
   const [saveLoading, setSaveLoading] = useState(false);
   useEffect(() => {
     function handleSaveData(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "s" &&
+        !e.shiftKey
+      ) {
         e.preventDefault(); // this is to prevent default save page behaviour
 
         setSaveLoading(false);

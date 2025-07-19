@@ -39,6 +39,7 @@ body {
   --foreground: 0, 0, 0;
   --border: 0, 0, 0;
   --background-secondary: 151, 151, 151;
+  --drop-hint: 177, 156, 217;
 }
 
 .dark {
@@ -46,4 +47,5 @@ body {
   --foreground: 153, 153, 153;
   --border: 88, 88, 88;
   --background-secondary: 51, 51, 51;
+  --drop-hint: 177, 156, 217;
 }

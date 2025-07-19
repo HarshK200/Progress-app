@@ -31,8 +31,6 @@ export const AddNewBoard = () => {
     // NOTE: if redo call return here
     if (opts.isRedo) return;
 
-    console.log("test");
-
     // NOTE: push the action to undo-stack
     setUndoActions((prev) => {
       const updatedUndoActions = [...prev];

@@ -406,7 +406,7 @@ export const List = memo(({ list_id }: ListProps) => {
       >
         {/* Dropable Edge Hint area left*/}
         <div
-          className={`z-10 absolute left-[-7px] h-full w-[2px] bg-blue-300 ${closestDropEdge === "left" ? "opacity-100" : "opacity-0"}`}
+          className={`z-10 absolute left-[-7px] h-full w-[2px] bg-drop-hint ${closestDropEdge === "left" ? "opacity-100" : "opacity-0"}`}
         ></div>
 
         <div className="flex relative pt-2">
@@ -471,7 +471,7 @@ export const List = memo(({ list_id }: ListProps) => {
 
         {/* Dropable Edge Hint area right*/}
         <div
-          className={`z-10 absolute right-[-7px] h-full w-[2px] bg-blue-300 ${closestDropEdge === "right" ? "opacity-100" : "opacity-0"}`}
+          className={`z-10 absolute right-[-7px] h-full w-[2px] bg-drop-hint ${closestDropEdge === "right" ? "opacity-100" : "opacity-0"}`}
         ></div>
       </div>
     </div>

@@ -24,10 +24,13 @@ const BoardPage = ({ board_id }: BoardPageProps) => {
   }
 
   const board = boards[board_id];
+  const firstLoad = board_id === "";
   if (!board) {
     return (
-      <main className="w-full min-h-screen flex p-4 gap-3 overflow-x-auto">
-        Invalid board Id
+      <main className="w-full min-h-screen flex items-center justify-center p-4 gap-3 overflow-x-auto">
+        <span className="px-4 py-2 bg-background-secondary rounded-md">
+          {firstLoad ? "No Board Open" : "Invalid board Id"}
+        </span>
       </main>
     );
   }

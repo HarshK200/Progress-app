@@ -14,7 +14,7 @@ export const AddNewList = ({
   prev_list_id,
 }: {
   board_id: string;
-  prev_list_id: string;
+  prev_list_id: string | undefined;
 }) => {
   const setLists = useSetLists();
   const setBoards = useSetBoards();
@@ -39,11 +39,16 @@ export const AddNewList = ({
     setLists((prev) => {
       if (!prev) return undefined;
 
-      return {
-        ...prev,
-        [prev_list_id]: { ...prev[prev_list_id], next_list_id: newListData.id },
-        [newListData.id]: newListData,
-      };
+      if (prev_list_id)
+        return {
+          ...prev,
+          [prev_list_id]: {
+            ...prev[prev_list_id],
+            next_list_id: newListData.id,
+          },
+          [newListData.id]: newListData,
+        };
+      else return { ...prev, [newListData.id]: newListData };
     });
 
     // add new list's id to the board it belongs to
@@ -70,24 +75,25 @@ export const AddNewList = ({
       const newUndoAction: UserAction = {
         type: "list-add-new",
         undoFunc: () => {
-          // NOTE: remove the list from list map
+          // NOTE: remove the list from lists map
           setLists((prev) => {
             if (!prev) return;
 
             const updatedLists = { ...prev };
 
             // updated the prev_list
-            updatedLists[prev_list_id] = {
-              ...updatedLists[prev_list_id],
-              next_list_id: undefined,
-            };
+            if (prev_list_id)
+              updatedLists[prev_list_id] = {
+                ...updatedLists[prev_list_id],
+                next_list_id: undefined,
+              };
             // delete the newly created list
             delete updatedLists[newListData.id];
 
             return updatedLists;
           });
 
-          // NOTE: update the list's id board accordingly
+          // NOTE: update the list's id from the board accordingly
           setBoards((prev) => {
             if (!prev) return;
             const updatedBoards = { ...prev };

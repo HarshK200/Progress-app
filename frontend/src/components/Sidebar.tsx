@@ -1,7 +1,9 @@
 import {
-  useBoardOpenId,
+  useBoardLastOpenId,
   useBoardsValue,
-  useSidebarAtom,
+  useContextMenuDataValue,
+  useSetContextMenuData,
+  useSidebarOpen,
   useTransitionAtom,
 } from "@/store";
 import { ChevronDown, ChevronUp, PanelLeft } from "lucide-react";
@@ -9,11 +11,13 @@ import { useState } from "react";
 import { main } from "@wailsjs/go/models";
 import { cn } from "@/lib/utils";
 import { AddNewBoard } from "./AddNewBoard";
+import { SidebarContextMenu } from "./SideBarContextMenu";
 
 const Sidebar = () => {
-  const [sidebarOpen, setSideBarOpen] = useSidebarAtom();
+  const [sidebarOpen, setSideBarOpen] = useSidebarOpen();
   const [transitionEnabled] = useTransitionAtom();
   const boards = useBoardsValue();
+  const contextMenuData = useContextMenuDataValue();
 
   if (!boards) {
     return (
@@ -34,7 +38,7 @@ const Sidebar = () => {
 
   return (
     <div className="min-h-screen flex select-none">
-      {/* Toggle options */}
+      {/* NOTE: Toggle options */}
       <div className="bg-background z-10 min-h-screen w-min border-r-[1px] border-r-border px-3 py-3">
         <PanelLeft
           size={22}
@@ -43,7 +47,7 @@ const Sidebar = () => {
         />
       </div>
 
-      {/* Re-tractable sidebar */}
+      {/* NOTE: Re-tractable sidebar */}
       <aside
         className={`overflow-y-auto bg-background h-[100vh] p-3 flex flex-1 border-r-[1px] border-r-border ${transitionEnabled ? "transition-all" : ""} ${sidebarOpen ? "w-64 opacity-100" : "px-0 m-0 w-0 translate-x-[-200px] opacity-0"} scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent`}
       >
@@ -55,6 +59,16 @@ const Sidebar = () => {
           <AddNewBoard />
         </SidebarGroup>
       </aside>
+
+      {/* NOTE: Right-click Context Menu */}
+      {contextMenuData.isOpen ? (
+        <SidebarContextMenu
+          style={{
+            left: contextMenuData.pos?.clientX,
+            top: contextMenuData.pos?.clientY,
+          }}
+        />
+      ) : null}
     </div>
   );
 };
@@ -98,15 +112,21 @@ interface SidebarBoardGroupItemProps {
   board: main.Board;
 }
 const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
-  const [boardOpenId, setBoardOpenId] = useBoardOpenId();
+  const [boardOpenId, setBoardOpenId] = useBoardLastOpenId();
   const isCurrentBoardOpen = board.id === boardOpenId;
+  const setContextMenuData = useSetContextMenuData();
 
   function handleOnClick() {
     setBoardOpenId(board.id);
   }
   function handleContextMenu(e: React.MouseEvent<HTMLLIElement>) {
     e.preventDefault();
-    alert("Implement edit(context) menu");
+
+    setContextMenuData({
+      isOpen: true,
+      pos: { clientX: e.clientX, clientY: e.clientY },
+      board_id: board.id,
+    });
   }
 
   return (

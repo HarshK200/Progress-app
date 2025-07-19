@@ -7,15 +7,15 @@
         "1",
         "2",
         "3",
-        "4"
+        "4",
+        "8a1f0f6e-4ea3-4551-ba44-d232ac27ef22"
       ]
     },
-    "7484e14c-e953-4902-924a-9251440be23b": {
-      "id": "7484e14c-e953-4902-924a-9251440be23b",
+    "659e4868-2d48-477d-aa99-9feac31d2650": {
+      "id": "659e4868-2d48-477d-aa99-9feac31d2650",
       "name": "New Board",
       "list_ids": [
-        "e8a4da4a-af1c-4459-aecb-5c25f6911d49",
-        "bcd55bca-0887-42aa-92c9-546210447152"
+        "9a8ce131-761f-4fa0-a77b-61716c76d732"
       ]
     }
   },
@@ -26,8 +26,7 @@
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
-        "62e000f2-16cc-43c4-b186-5cd714142f1e",
-        "60kw20dk2-16cc-43c4-b186-5cd714142f1e"
+        "564799fc-798a-4994-b341-97ba70e3724a"
       ],
       "prev_list_id": null,
       "next_list_id": "2"
@@ -38,11 +37,10 @@
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
-        "564799fc-798a-4994-b341-97ba70e3724a",
-        "bcf61091-709c-40b0-89c2-5f052c7f8769"
+        "cbb2694f-9a64-4fe2-bed1-bfb526bc207a"
       ],
       "prev_list_id": "1",
-      "next_list_id": "4"
+      "next_list_id": "3"
     },
     "3": {
       "id": "3",
@@ -51,21 +49,41 @@
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
         "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2",
-        "171883c6-621b-4fcc-b01b-0586dc2b0250"
+        "171883c6-621b-4fcc-b01b-0586dc2b0250",
+        "62e000f2-16cc-43c4-b186-5cd714142f1e",
+        "60kw20dk2-16cc-43c4-b186-5cd714142f1e"
       ],
-      "prev_list_id": "4",
-      "next_list_id": null
+      "prev_list_id": "2",
+      "next_list_id": "4"
     },
     "4": {
       "id": "4",
       "title": "BackBurner",
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
+      "card_ids": [],
+      "prev_list_id": "3",
+      "next_list_id": "8a1f0f6e-4ea3-4551-ba44-d232ac27ef22"
+    },
+    "8a1f0f6e-4ea3-4551-ba44-d232ac27ef22": {
+      "id": "8a1f0f6e-4ea3-4551-ba44-d232ac27ef22",
+      "title": "Canceled",
+      "classname": "",
+      "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
         "6969e000f2-16cc-43c4-b186-5cd714142f1e"
       ],
-      "prev_list_id": "2",
-      "next_list_id": "3"
+      "prev_list_id": "4",
+      "next_list_id": null
+    },
+    "9a8ce131-761f-4fa0-a77b-61716c76d732": {
+      "id": "9a8ce131-761f-4fa0-a77b-61716c76d732",
+      "title": "My Test List",
+      "classname": "",
+      "board_id": "659e4868-2d48-477d-aa99-9feac31d2650",
+      "card_ids": [],
+      "prev_list_id": null,
+      "next_list_id": null
     },
     "bcd55bca-0887-42aa-92c9-546210447152": {
       "id": "bcd55bca-0887-42aa-92c9-546210447152",
@@ -113,10 +131,10 @@
     "171883c6-621b-4fcc-b01b-0586dc2b0250": {
       "id": "171883c6-621b-4fcc-b01b-0586dc2b0250",
       "title": "Button to add a new card",
-      "is_done": false,
+      "is_done": true,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "3",
-      "prev_card_id": null,
+      "prev_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
       "next_card_id": "a01bd0c7-bd69-4ef7-88a9-c13f84173bf2"
     },
     "1852892b-c97f-45e8-bd50-ef86a1c89215": {
@@ -151,25 +169,25 @@
       "title": "Custom checkbox",
       "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "2",
+      "list_id": "1",
       "prev_card_id": null,
-      "next_card_id": "bcf61091-709c-40b0-89c2-5f052c7f8769"
+      "next_card_id": null
     },
     "60kw20dk2-16cc-43c4-b186-5cd714142f1e": {
       "id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
       "title": "Write the board state to file and read it to state",
-      "is_done": false,
+      "is_done": true,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "1",
+      "list_id": "3",
       "prev_card_id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
-      "next_card_id": null
+      "next_card_id": "171883c6-621b-4fcc-b01b-0586dc2b0250"
     },
     "62e000f2-16cc-43c4-b186-5cd714142f1e": {
       "id": "62e000f2-16cc-43c4-b186-5cd714142f1e",
       "title": "Figure out the data structure for serialization",
       "is_done": true,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "1",
+      "list_id": "3",
       "prev_card_id": null,
       "next_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e"
     },
@@ -187,7 +205,7 @@
       "title": "Install react-router and setup the sidebar",
       "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "4",
+      "list_id": "8a1f0f6e-4ea3-4551-ba44-d232ac27ef22",
       "prev_card_id": null,
       "next_card_id": null
     },
@@ -209,13 +227,13 @@
       "prev_card_id": "171883c6-621b-4fcc-b01b-0586dc2b0250",
       "next_card_id": null
     },
-    "bcf61091-709c-40b0-89c2-5f052c7f8769": {
-      "id": "bcf61091-709c-40b0-89c2-5f052c7f8769",
-      "title": "Test new app",
+    "cbb2694f-9a64-4fe2-bed1-bfb526bc207a": {
+      "id": "cbb2694f-9a64-4fe2-bed1-bfb526bc207a",
+      "title": "Implement Right click",
       "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "2",
-      "prev_card_id": "564799fc-798a-4994-b341-97ba70e3724a",
+      "prev_card_id": null,
       "next_card_id": null
     }
   }

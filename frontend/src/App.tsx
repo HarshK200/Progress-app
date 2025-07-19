@@ -2,7 +2,7 @@ import { useMountUnmountKeybinds } from "@/hooks/useMountUnmountKeybinds";
 import BoardPage from "@/pages/BoardPage";
 import { useHydrateUserDataState } from "@/hooks/useHydrateUserData";
 import Sidebar from "./components/Sidebar";
-import { useBoardOpenIdValue } from "./store";
+import { useBoardLastOpenIdValue } from "./store";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
@@ -10,7 +10,7 @@ const App = () => {
   useMountUnmountKeybinds();
   useHydrateUserDataState();
 
-  const boardOpen = useBoardOpenIdValue();
+  const boardOpen = useBoardLastOpenIdValue();
   return (
     <div className="dark flex min-w-full min-h-screen bg-background text-foreground">
       <Sidebar />
