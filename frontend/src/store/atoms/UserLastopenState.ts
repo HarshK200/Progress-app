@@ -1,3 +1,4 @@
+import { main } from "@wailsjs/go/models";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
@@ -15,10 +16,16 @@ export function useSetBoardLastOpenId() {
   return useSetAtom(boardLastOpenIdAtom);
 }
 
+
+
+
 export const sidebarAtom = atomWithStorage<boolean>("isSidebarOpen", false);
 export function useSidebarOpen() {
   return useAtom(sidebarAtom);
 }
+
+
+
 
 interface contextMenuDataType {
   isOpen: boolean;
@@ -26,12 +33,12 @@ interface contextMenuDataType {
     clientX: number;
     clientY: number;
   } | null;
-  board_id: string | null;
+  board: main.Board | null;
 }
 const contextMenuDataAtom = atom<contextMenuDataType>({
   isOpen: false,
   pos: null,
-  board_id: null,
+  board: null,
 });
 export const contextMenuDataDervied = atom(
   // getter
@@ -42,7 +49,7 @@ export const contextMenuDataDervied = atom(
     // NOTE: if opening the contextMenu add the handler to remove it Random primary button click
     function handleBlurOnClick(e: MouseEvent) {
       if (e.button === 0) {
-        set(contextMenuDataAtom, { isOpen: false, pos: null, board_id: null });
+        set(contextMenuDataAtom, { isOpen: false, pos: null, board: null });
         window.removeEventListener("click", handleBlurOnClick);
       }
     }

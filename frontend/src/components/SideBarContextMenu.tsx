@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
 import {
   useContextMenuDataValue,
+  UserAction,
   useSetBoardLastOpenId,
   useSetBoards,
+  useSetRedoActions,
+  useSetUndoActions,
 } from "@/store";
-import { useEditingBoardIdAtom } from "@/store/atoms/EditingBoardNameState";
+import { useEditingBoardIdAtom } from "@/store";
 
 interface SidebarContextMenuProps {
   className?: string;
@@ -18,24 +21,62 @@ export const SidebarContextMenu = ({
   const setBoards = useSetBoards();
   const setBoardOpenId = useSetBoardLastOpenId();
   const [, setEditingBoardId] = useEditingBoardIdAtom();
+  const setUndoActions = useSetUndoActions();
+  const setRedoActions = useSetRedoActions();
 
   function handleRename() {
-    setEditingBoardId(contextMenuData.board_id);
+    setEditingBoardId(contextMenuData.board?.id ?? null);
   }
 
-  function handleDelete() {
+  function handleDelete(opts: { isRedo: boolean }) {
     // NOTE: delete the board for the boards map
-    setBoards((boards) => {
-      const updatedBoards = { ...boards };
-      if (!contextMenuData.board_id) return updatedBoards;
+    setBoards((prev) => {
+      const updatedBoards = { ...prev };
+      if (!contextMenuData.board) return updatedBoards;
 
-      delete updatedBoards[contextMenuData.board_id];
+      delete updatedBoards[contextMenuData.board.id];
 
       return updatedBoards;
     });
 
     // NOTE: update the currently open board state to empty
     setBoardOpenId("");
+
+    if (opts.isRedo) return;
+
+    // =========================== Undo-Redo stuff ===========================
+    if (!contextMenuData.board) return;
+
+    // NOTE: push the user action to the undo stack
+    setUndoActions((prev) => {
+      const updatedUndoActions = [...prev];
+      if (!contextMenuData.board) return updatedUndoActions;
+
+      const newUndoAction: UserAction = {
+        type: "board-delete",
+        undoFunc: () => {
+          // NOTE: re-add the board to the board map
+          setBoards((prev) => {
+            if (!contextMenuData.board) return prev;
+            return {
+              ...prev,
+              [contextMenuData.board.id]: contextMenuData.board,
+            };
+          });
+        },
+        redoFunc: () => {
+          handleDelete({ isRedo: true });
+        },
+      };
+
+      // push the new UserAction to the undo stack
+      updatedUndoActions.push(newUndoAction);
+
+      return updatedUndoActions;
+    });
+
+    // NOTE: flush the redo stack
+    setRedoActions([]);
   }
 
   return (
@@ -59,7 +100,7 @@ export const SidebarContextMenu = ({
         <li className="px-6 py-1 border-t border-t-border">
           <span
             className="cursor-pointer hover:opacity-70"
-            onClick={handleDelete}
+            onClick={() => handleDelete({ isRedo: false })}
           >
             Delete
           </span>

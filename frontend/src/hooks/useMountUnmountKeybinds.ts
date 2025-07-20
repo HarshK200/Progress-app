@@ -41,7 +41,7 @@ export function useMountUnmountKeybinds() {
   // NOTE: Bind undo-redo keybinds
   useEffect(() => {
     function handleUndoRedo(e: KeyboardEvent) {
-      // redo
+      // NOTE: redo
       if (e.shiftKey && e.ctrlKey && e.key.toLowerCase() === "z") {
         if (redoActions.length <= 0) {
           toast("Already at the lastest change", {
@@ -72,7 +72,7 @@ export function useMountUnmountKeybinds() {
         });
       }
 
-      // undo
+      // NOTE: undo
       if (e.ctrlKey && e.key.toLowerCase() === "z" && !e.shiftKey) {
         // NOTE: if no undo actions in the stack
         if (undoActions.length <= 0) {

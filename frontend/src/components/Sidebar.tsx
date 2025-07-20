@@ -13,7 +13,7 @@ import { main } from "@wailsjs/go/models";
 import { cn } from "@/lib/utils";
 import { AddNewBoard } from "./AddNewBoard";
 import { SidebarContextMenu } from "./SideBarContextMenu";
-import { useEditingBoardIdAtom } from "@/store/atoms/EditingBoardNameState";
+import { useEditingBoardIdAtom } from "@/store";
 import invariant from "tiny-invariant";
 
 const Sidebar = () => {
@@ -142,7 +142,7 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
     setContextMenuData({
       isOpen: true,
       pos: { clientX: e.clientX, clientY: e.clientY },
-      board_id: board.id,
+      board: board,
     });
   }
 

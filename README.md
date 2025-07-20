@@ -49,7 +49,7 @@
   - [x] board-add-new
   - [x] list-add-new
   - [x] listcard-add-new
-  - [ ] board-delete
+  - [x] board-delete
   - [ ] list-delete
   - [ ] listCard-delete
   - [ ] board-update
@@ -65,3 +65,4 @@
   - [ ] make it so that prev open one closes when goes out of focus
   - [ ] also upon clicking somewhere randomly also closes the edit-menu
   - [ ] Make a settings modal
+- [ ] Implement a filter system that orders the board-name listed on the sidebar
