@@ -26,8 +26,8 @@
       captures the draggingCardList value and hence causes issues)
 - [x] BUG FIX: the infinite loop bug on two card swap in the same list. (just had to do an early return)
 - [x] Implement drag and drop functionality like trello for listcards (use pragmatic dnd)
-      (DONE: made listcard dragable,
-      DONE: make dropable tragets)
+  - [x] made listcard dragable
+  - [x] make dropable tragets)
 - [x] Implement the drop on top functionality for dnd list cards
 - [x] Implement the drop on bottom functionality for dnd list cards (i just asked chatgpt for drop on top inverse)
 - [x] POLISH: Adjust for the gap-1.5 i.e. 6px when dropping (i did as much as i could)
@@ -41,10 +41,9 @@
 - [x] Implement Undo (with ctrl + z)
 - [x] Implement Redo (with ctrl + shift + z)
 - [x] BUG FIX: on deleting the currently openBoard. The lastOpenBoardId is not updated
-
-- [ ] Implement Right click opens context menu on board
+- [x] Implement Right click opens context menu on board
   - [x] delete
-  - [ ] rename
+  - [x] rename
 
 - [ ] Make it so every state change is an action Implement UserAction for State changes:
   - [x] board-add-new
@@ -57,6 +56,7 @@
   - [ ] list-update
   - [ ] listcard-update
 
+- [ ] Implement custom checkbox
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
 - [ ] Add Skeleton loading ui for board lists and listcards

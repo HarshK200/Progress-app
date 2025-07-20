@@ -4,6 +4,7 @@ import {
   useSetBoardLastOpenId,
   useSetBoards,
 } from "@/store";
+import { useEditingBoardIdAtom } from "@/store/atoms/EditingBoardNameState";
 
 interface SidebarContextMenuProps {
   className?: string;
@@ -16,10 +17,12 @@ export const SidebarContextMenu = ({
   const contextMenuData = useContextMenuDataValue();
   const setBoards = useSetBoards();
   const setBoardOpenId = useSetBoardLastOpenId();
+  const [, setEditingBoardId] = useEditingBoardIdAtom();
 
   function handleRename() {
-    console.log("Rename was clicked");
+    setEditingBoardId(contextMenuData.board_id);
   }
+
   function handleDelete() {
     // NOTE: delete the board for the boards map
     setBoards((boards) => {
@@ -32,7 +35,7 @@ export const SidebarContextMenu = ({
     });
 
     // NOTE: update the currently open board state to empty
-    setBoardOpenId("");
+    setBoardOpenId(null);
   }
 
   return (

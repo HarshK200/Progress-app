@@ -1,9 +1,9 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-export const boardLastOpenIdAtom = atomWithStorage<string>(
+export const boardLastOpenIdAtom = atomWithStorage<string | null>(
   "boardLastOpenId",
-  localStorage.getItem("boardLastOpenId") ?? "",
+  localStorage.getItem("boardLastOpenId") ?? null,
 );
 export function useBoardLastOpenId() {
   return useAtom(boardLastOpenIdAtom);
@@ -39,14 +39,13 @@ export const contextMenuDataDervied = atom(
 
   // settter
   (get, set, updatedValue: contextMenuDataType) => {
+    // NOTE: if opening the contextMenu add the handler to remove it Random primary button click
     function handleBlurOnClick(e: MouseEvent) {
       if (e.button === 0) {
         set(contextMenuDataAtom, { isOpen: false, pos: null, board_id: null });
         window.removeEventListener("click", handleBlurOnClick);
       }
     }
-
-    // if opening the contextMenu add the handler to remove it Random onClick
     const previousValue = get(contextMenuDataAtom);
     if (updatedValue.isOpen && !previousValue.isOpen) {
       window.addEventListener("click", handleBlurOnClick);

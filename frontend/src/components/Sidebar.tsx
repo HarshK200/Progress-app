@@ -2,16 +2,19 @@ import {
   useBoardLastOpenId,
   useBoardsValue,
   useContextMenuDataValue,
+  useSetBoards,
   useSetContextMenuData,
   useSidebarOpen,
   useTransitionAtom,
 } from "@/store";
 import { ChevronDown, ChevronUp, PanelLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { main } from "@wailsjs/go/models";
 import { cn } from "@/lib/utils";
 import { AddNewBoard } from "./AddNewBoard";
 import { SidebarContextMenu } from "./SideBarContextMenu";
+import { useEditingBoardIdAtom } from "@/store/atoms/EditingBoardNameState";
+import invariant from "tiny-invariant";
 
 const Sidebar = () => {
   const [sidebarOpen, setSideBarOpen] = useSidebarOpen();
@@ -113,13 +116,27 @@ interface SidebarBoardGroupItemProps {
 }
 const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   const [boardOpenId, setBoardOpenId] = useBoardLastOpenId();
+  const [inputValue, setInputValue] = useState(board.name);
+  const [editingBoardId, setEditingBoardId] = useEditingBoardIdAtom();
   const isCurrentBoardOpen = board.id === boardOpenId;
   const setContextMenuData = useSetContextMenuData();
+  const setBoards = useSetBoards();
+  const ref = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    invariant(element);
+
+    if (editingBoardId === board.id) {
+      element.select();
+    }
+  }, [editingBoardId]);
 
   function handleOnClick() {
     setBoardOpenId(board.id);
   }
-  function handleContextMenu(e: React.MouseEvent<HTMLLIElement>) {
+
+  function handleContextMenu(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
 
     setContextMenuData({
@@ -129,14 +146,48 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
     });
   }
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    // NOTE: reset the inputValue when escape pressed
+    if (e.key.toLowerCase() === "escape") {
+      // set the editingBoardName to null
+      setEditingBoardId(null);
+
+      // reset the input value to the first
+      setInputValue(board.name);
+    }
+
+    if (e.key.toLowerCase() === "enter") {
+      // set the editingBoardName to null
+      setEditingBoardId(null);
+
+      // update the boards state
+      setBoards((prev) => {
+        if (!prev) return;
+        const updatedBoards = { ...prev };
+        updatedBoards[board.id] = {
+          ...updatedBoards[board.id],
+          name: inputValue,
+        };
+
+        return updatedBoards;
+      });
+    }
+  }
+
   return (
-    <li
-      className={`relative mx-2 my-0.5 px-4 py-1 ${isCurrentBoardOpen ? "bg-background-secondary" : ""} hover:bg-background-secondary rounded-md cursor-pointer`}
+    <input
+      className={`outline-none relative mx-2 my-0.5 px-4 py-1 bg-background ${isCurrentBoardOpen ? "bg-background-secondary" : ""} hover:bg-background-secondary rounded-md cursor-pointer`}
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
       onClick={handleOnClick}
+      onDoubleClick={() => {
+        setEditingBoardId(board.id);
+      }}
       onContextMenu={handleContextMenu}
-    >
-      {board.name}
-    </li>
+      readOnly={!(editingBoardId === board.id)}
+      onKeyDown={handleKeyDown}
+      ref={ref}
+    />
   );
 };
 

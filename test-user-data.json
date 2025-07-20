@@ -2,7 +2,7 @@
   "boards": {
     "251ab92d-ccff-4e74-ae4e-619ebb3b1752": {
       "id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "name": "Programming board",
+      "name": "Programming Board",
       "list_ids": [
         "1",
         "2",
@@ -13,7 +13,7 @@
     },
     "659e4868-2d48-477d-aa99-9feac31d2650": {
       "id": "659e4868-2d48-477d-aa99-9feac31d2650",
-      "name": "New Board",
+      "name": "Test board",
       "list_ids": [
         "9a8ce131-761f-4fa0-a77b-61716c76d732"
       ]

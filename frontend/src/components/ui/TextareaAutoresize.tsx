@@ -7,7 +7,7 @@ interface TextareaAutoresizeProps {
   outlineOnClick?: boolean;
   outlineOnDoubleClick?: boolean;
   className?: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
 }
 
 export const TextareaAutoresize = memo(
