@@ -1,9 +1,9 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-export const boardLastOpenIdAtom = atomWithStorage<string | null>(
+export const boardLastOpenIdAtom = atomWithStorage<string>(
   "boardLastOpenId",
-  localStorage.getItem("boardLastOpenId") ?? null,
+  localStorage.getItem("boardLastOpenId") ?? "",
 );
 export function useBoardLastOpenId() {
   return useAtom(boardLastOpenIdAtom);
