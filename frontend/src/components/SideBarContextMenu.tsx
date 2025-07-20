@@ -35,7 +35,7 @@ export const SidebarContextMenu = ({
     });
 
     // NOTE: update the currently open board state to empty
-    setBoardOpenId(null);
+    setBoardOpenId("");
   }
 
   return (
