@@ -50,8 +50,8 @@
   - [x] list-add-new
   - [x] listcard-add-new
   - [x] board-delete
-  - [ ] list-delete
-  - [ ] listCard-delete
+  - [x] list-delete
+  - [x] listCard-delete
   - [ ] board-update
   - [ ] list-update
   - [ ] listcard-update
