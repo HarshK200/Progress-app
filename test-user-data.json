@@ -25,9 +25,7 @@
       "title": "Doing",
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "card_ids": [
-        "cbb2694f-9a64-4fe2-bed1-bfb526bc207a"
-      ],
+      "card_ids": [],
       "prev_list_id": "9e626cd3-4daa-49f3-9483-6cd78426a25f",
       "next_list_id": "3"
     },
@@ -41,7 +39,8 @@
         "171883c6-621b-4fcc-b01b-0586dc2b0250",
         "62e000f2-16cc-43c4-b186-5cd714142f1e",
         "60kw20dk2-16cc-43c4-b186-5cd714142f1e",
-        "3"
+        "3",
+        "cbb2694f-9a64-4fe2-bed1-bfb526bc207a"
       ],
       "prev_list_id": "2",
       "next_list_id": "4"
@@ -192,7 +191,7 @@
       "is_done": true,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "3",
-      "prev_card_id": null,
+      "prev_card_id": "cbb2694f-9a64-4fe2-bed1-bfb526bc207a",
       "next_card_id": "60kw20dk2-16cc-43c4-b186-5cd714142f1e"
     },
     "65e99b3c-7492-4927-b788-a7d1fdb96f67": {
@@ -233,12 +232,12 @@
     },
     "cbb2694f-9a64-4fe2-bed1-bfb526bc207a": {
       "id": "cbb2694f-9a64-4fe2-bed1-bfb526bc207a",
-      "title": "Implement Right click",
-      "is_done": false,
+      "title": "Implement Right click context menu for board",
+      "is_done": true,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "list_id": "2",
+      "list_id": "3",
       "prev_card_id": null,
-      "next_card_id": null
+      "next_card_id": "62e000f2-16cc-43c4-b186-5cd714142f1e"
     },
     "d3c2d56d-d610-4252-baf2-e3c1b3f249d3": {
       "id": "d3c2d56d-d610-4252-baf2-e3c1b3f249d3",

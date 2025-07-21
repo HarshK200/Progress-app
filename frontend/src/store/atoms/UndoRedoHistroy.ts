@@ -2,9 +2,9 @@ import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 
 export interface UserAction {
   type:
-    | "list-update"
-    | "listcard-update"
-    | "board-update"
+    | "list-rename"
+    | "listcard-rename"
+    | "board-rename"
     | "list-add-new"
     | "listcard-add-new"
     | "board-add-new"

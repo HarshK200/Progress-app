@@ -7,7 +7,7 @@ import {
   useSetListCards,
   useSetLists,
 } from "@/store";
-import { memo, useEffect, useRef, useState } from "react";
+import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
 import { AddNewCard } from "@/components/AddNewCard";
 import { main } from "@wailsjs/go/models";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -397,6 +397,14 @@ export const List = memo(({ list_id }: ListProps) => {
     clientY: number;
   } | null>(null);
 
+  // TODO: Implement this undo-redo for list-rename
+  // implement by using [listTitle, setListTitle] = useState() for TextareaAutoresize value
+  // and [isEditingListTitle, setIsEditingListTitle] = useState<boolean>() with onKeyDown eventHandler (kinda like i did in board-rename in Sidebar.tsx)
+  function handleListTitleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    if (!list) return;
+    setList({ ...list, title: e.target.value });
+  }
+
   return (
     // NOTE: List wrapper div
     <div ref={listWrapperRef}>
@@ -409,14 +417,12 @@ export const List = memo(({ list_id }: ListProps) => {
           className={`z-10 absolute left-[-7px] h-full w-[2px] bg-drop-hint ${closestDropEdge === "left" ? "opacity-100" : "opacity-0"}`}
         ></div>
 
-        <div className="flex relative pt-2">
+        <div className="rounded-md flex relative pt-2 pb-1">
           {/* List Title */}
           <TextareaAutoresize
             title={list.title}
             outlineOnDoubleClick
-            onChange={(e) => {
-              setList({ ...list, title: e.target.value });
-            }}
+            onChange={handleListTitleChange}
             className={`font-bold mx-4`}
           />
 

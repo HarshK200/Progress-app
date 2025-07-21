@@ -52,9 +52,9 @@
   - [x] board-delete
   - [x] list-delete
   - [x] listCard-delete
-  - [ ] board-update
-  - [ ] list-update
-  - [ ] listcard-update
+  - [x] board-rename
+  - [ ] list-rename
+  - [ ] listcard-rename
 
 - [ ] Implement custom checkbox
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)

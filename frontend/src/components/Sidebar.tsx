@@ -2,8 +2,11 @@ import {
   useBoardLastOpenId,
   useBoardsValue,
   useContextMenuDataValue,
+  UserAction,
   useSetBoards,
   useSetContextMenuData,
+  useSetRedoActions,
+  useSetUndoActions,
   useSidebarOpen,
   useTransitionAtom,
 } from "@/store";
@@ -123,6 +126,9 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   const setBoards = useSetBoards();
   const ref = useRef<HTMLInputElement | null>(null);
 
+  const setUndoActions = useSetUndoActions();
+  const setRedoActions = useSetRedoActions();
+
   useEffect(() => {
     const element = ref.current;
     invariant(element);
@@ -154,6 +160,9 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
 
       // reset the input value to the first
       setInputValue(board.name);
+
+      // de-select the board name
+      ref.current?.blur();
     }
 
     if (e.key.toLowerCase() === "enter") {
@@ -163,14 +172,64 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
       // update the boards state
       setBoards((prev) => {
         if (!prev) return;
-        const updatedBoards = { ...prev };
-        updatedBoards[board.id] = {
-          ...updatedBoards[board.id],
-          name: inputValue,
+
+        return {
+          ...prev,
+          [board.id]: { ...prev[board.id], name: inputValue },
+        };
+      });
+
+      // de-select the board name
+      ref.current?.blur();
+
+      // NOTE: push new user action to undo stack
+      setUndoActions((prev) => {
+        const updatedUndoActions = [...prev];
+        const newUserAction: UserAction = {
+          type: "board-rename",
+
+          // undo
+          undoFunc: () => {
+            // reset the board state back to original
+            setBoards((prev) => {
+              if (!prev) return;
+              const updatedBoards = { ...prev };
+              updatedBoards[board.id] = {
+                ...updatedBoards[board.id],
+                name: board.name,
+              };
+
+              return updatedBoards;
+            });
+
+            // reset the inputValue back to original as well
+            setInputValue(board.name);
+          },
+
+          // redo
+          redoFunc: () => {
+            // update the board state back to last change
+            setBoards((prev) => {
+              if (!prev) return;
+
+              return {
+                ...prev,
+                [board.id]: { ...prev[board.id], name: inputValue },
+              };
+            });
+
+            // reset the inputValue state back to last change
+            setInputValue(inputValue);
+          },
         };
 
-        return updatedBoards;
+        updatedUndoActions.push(newUserAction);
+
+        return updatedUndoActions;
       });
+
+      // NOTE: flush the redo stack
+      setRedoActions([]);
     }
   }
 
