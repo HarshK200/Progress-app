@@ -1,21 +1,25 @@
 import { cn } from "@/lib/utils";
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
+import invariant from "tiny-invariant";
 
 export type onEnterFunc = (state: {
   prevTitleState: string;
   currentTitleState: string;
   setTextAreaValue: React.Dispatch<React.SetStateAction<string>>;
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }) => void;
 export type onEscapeFunc = (state: {
   prevTitleState: string;
   currentTitleState: string;
   setTextAreaValue: React.Dispatch<React.SetStateAction<string>>;
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }) => void;
 export type onBlurFunc = (state: {
   prevTitleState: string;
   currentTitleState: string;
   setTextAreaValue: React.Dispatch<React.SetStateAction<string>>;
+  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }) => void;
 
 interface TextareaAutoresizeProps {
@@ -40,7 +44,7 @@ export const TextareaAutoresize = memo(
   }: TextareaAutoresizeProps) => {
     const [textAreaValue, setTextAreaValue] = useState(title);
     const [isEditing, setIsEditing] = useState(false);
-    const textAreaRef = useRef<null | any>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
     const baseClass = `resize-none border-none bg-inherit ${isEditing ? "cursor-text" : "select-none cursor-default"}`;
     const outlineDblClass = `${!isEditing && outlineOnDoubleClick ? "outline-none" : isEditing && "focus:outline-outline"}`;
@@ -52,7 +56,16 @@ export const TextareaAutoresize = memo(
       className,
     );
 
+    // NOTE: this is for the BUG fix i.e. the textAreaValue doesn't update when i use setTextAreaValue outside of this function by passing to onEnterFunc
+    useEffect(() => {
+      if (!isEditing) {
+        setTextAreaValue(title);
+      }
+    }, [title, isEditing]);
+
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+      invariant(textAreaRef.current);
+
       if (e.key.toLowerCase() === "escape") {
         // make the textArea readOnly
         setIsEditing(false);
@@ -68,15 +81,12 @@ export const TextareaAutoresize = memo(
           prevTitleState: title,
           currentTitleState: textAreaValue,
           setTextAreaValue: setTextAreaValue,
+          textAreaRef: textAreaRef,
         });
         return;
       }
 
       if (e.key.toLowerCase() === "enter" && !e.shiftKey) {
-        // de-select the text
-        textAreaRef.current.setSelectionRange(0, 0);
-        textAreaRef.current.blur();
-
         // make the textArea readOnly
         setIsEditing(false);
 
@@ -84,6 +94,7 @@ export const TextareaAutoresize = memo(
           prevTitleState: title,
           currentTitleState: textAreaValue,
           setTextAreaValue: setTextAreaValue,
+          textAreaRef: textAreaRef,
         });
         return;
       }
@@ -96,6 +107,7 @@ export const TextareaAutoresize = memo(
         prevTitleState: title,
         currentTitleState: textAreaValue,
         setTextAreaValue: setTextAreaValue,
+        textAreaRef: textAreaRef,
       });
     }
 
@@ -112,7 +124,7 @@ export const TextareaAutoresize = memo(
         readOnly={!isEditing}
         onDoubleClick={() => {
           setIsEditing(true);
-          textAreaRef.current.select();
+          textAreaRef?.current?.select();
         }}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}

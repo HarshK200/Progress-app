@@ -53,8 +53,11 @@
   - [x] list-delete
   - [x] listCard-delete
   - [x] board-rename
-  - [ ] list-rename
-  - [ ] listcard-rename
+  - [x] list-rename
+  - [x] listcard-rename
+  - [ ] list-reorder
+  - [ ] listcard-reorder
+- [ ] BUG FIX: handleBlur() for board, list, listcard rename calls onEnterFunc which causes double push of newUserAction to the undo stack
 
 - [ ] Add Skeleton loading ui:
   - [x] sidebar

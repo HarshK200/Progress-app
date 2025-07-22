@@ -3,7 +3,14 @@ import {
   onEscapeFunc,
   TextareaAutoresize,
 } from "@/components/ui/TextareaAutoresize";
-import { useList, useListCard, useSetListCards } from "@/store";
+import {
+  useList,
+  useListCard,
+  UserAction,
+  useSetListCards,
+  useSetRedoActions,
+  useSetUndoActions,
+} from "@/store";
 import { Plus, SquarePen } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -355,16 +362,64 @@ export const ListCard = memo(
     }, [closestDroppableEdge, card, list]);
     // NOTE: the closestDroppableEdge, card and list are in the dependency array to prevent the closure issue
 
-    const onEnterListCard: onEnterFunc = ({ currentTitleState }) => {
+    const setUndoActions = useSetUndoActions();
+    const setRedoActions = useSetRedoActions();
+    const isEnterPressed = useRef<boolean>(false);
+
+    const onEnterListCard: onEnterFunc = ({
+      prevTitleState,
+      currentTitleState,
+      setTextAreaValue,
+      textAreaRef,
+    }) => {
+      invariant(textAreaRef.current);
+      isEnterPressed.current = true;
+      // NOTE:de-select the text
+      textAreaRef.current.setSelectionRange(0, 0);
+      textAreaRef.current.blur();
+
       // NOTE: update listcard's title in listcard map
       setCard({ ...card, title: currentTitleState });
 
       // NOTE: push new UserAction to undo stack
+      setUndoActions((prev) => {
+        const updatedUndoActions = [...prev];
+        const newUserAction: UserAction = {
+          type: "listcard-rename",
+
+          // undo
+          undoFunc: () => {
+            // reset the listcard's title state
+            setCard({ ...card, title: prevTitleState });
+
+            // reset the TextareaAutoresize's value as well
+            setTextAreaValue(prevTitleState);
+          },
+
+          // redo
+          redoFunc: () => {
+            // update the listcard's title state back to current
+            setCard({ ...card, title: currentTitleState });
+
+            // updated the TextareaAutoresize's value as well
+            setTextAreaValue(currentTitleState);
+          },
+        };
+
+        updatedUndoActions.push(newUserAction);
+
+        return updatedUndoActions;
+      });
 
       // NOTE: flush the redo stack
+      setRedoActions([]);
+
+      isEnterPressed.current = false;
     };
     const onBlurListCard: onEscapeFunc = (state) => {
-      onEnterListCard(state);
+      if (!isEnterPressed.current) {
+        onEnterListCard(state);
+      }
     };
 
     return (

@@ -402,12 +402,22 @@ export const List = memo(({ list_id }: ListProps) => {
 
   const setUndoActions = useSetUndoActions();
   const setRedoActions = useSetRedoActions();
+  const isEnterPressed = useRef<boolean>(false);
 
   // NOTE: list-rename UserAction
   const onEnterListTitle: onEnterFunc = ({
+    prevTitleState,
     currentTitleState,
     setTextAreaValue,
+    textAreaRef,
   }) => {
+    invariant(textAreaRef.current);
+    isEnterPressed.current = true;
+
+    // NOTE:de-select the text
+    textAreaRef.current.setSelectionRange(0, 0);
+    textAreaRef.current.blur();
+
     // NOTE: update list's title in listcard map
     setList({ ...list, title: currentTitleState });
 
@@ -419,11 +429,21 @@ export const List = memo(({ list_id }: ListProps) => {
 
         // undo
         undoFunc: () => {
-          // reset
+          // reset the list's title state
+          setList({ ...list, title: prevTitleState });
+
+          // reset the TextareaAutoresize's value as well
+          setTextAreaValue(prevTitleState);
         },
 
         // redo
-        redoFunc: () => {},
+        redoFunc: () => {
+          // update the list's title state back to current
+          setList({ ...list, title: currentTitleState });
+
+          // updated the TextareaAutoresize's value as well
+          setTextAreaValue(currentTitleState);
+        },
       };
 
       updatedUndoActions.push(newUserAction);
@@ -433,9 +453,13 @@ export const List = memo(({ list_id }: ListProps) => {
 
     // NOTE: flush the redo stack
     setRedoActions([]);
+
+    isEnterPressed.current = false;
   };
   const onBlurListTitle: onBlurFunc = (state) => {
-    onEnterListTitle(state);
+    if (!isEnterPressed.current) {
+      onEnterListTitle(state);
+    }
   };
 
   return (

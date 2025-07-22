@@ -114,6 +114,7 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   const setContextMenuData = useSetContextMenuData();
   const setBoards = useSetBoards();
   const ref = useRef<HTMLInputElement | null>(null);
+  const isEnterPressed = useRef<boolean>(false);
 
   const setUndoActions = useSetUndoActions();
   const setRedoActions = useSetRedoActions();
@@ -152,6 +153,8 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   function handleOnEnter() {
     // set the editingBoardName to null
     setEditingBoardId(null);
+    // ignore if the update value is same as the prev
+    if (inputValue === board.name) return;
 
     // update the boards state
     setBoards((prev) => {
@@ -211,6 +214,8 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
 
     // NOTE: flush the redo stack
     setRedoActions([]);
+
+    isEnterPressed.current = false;
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -224,6 +229,8 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
     }
 
     if (e.key.toLowerCase() === "enter") {
+      isEnterPressed.current = true;
+
       // de-select the board name
       ref.current?.setSelectionRange(0, 0);
       ref.current?.blur();
@@ -233,8 +240,10 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
   }
 
   function handleBlur() {
-    setEditingBoardId(null);
-    handleOnEnter();
+    if (!isEnterPressed.current) {
+      setEditingBoardId(null);
+      handleOnEnter();
+    }
   }
 
   return (

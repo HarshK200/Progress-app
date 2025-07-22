@@ -54,6 +54,7 @@ export function useMountUnmountKeybinds() {
         // Call the redoFunc and push to undo stack
         setRedoActions((prev) => {
           const updatedRedoActions = [...prev];
+          console.log("redo: ", [...updatedRedoActions]);
           const recentRedoAction = updatedRedoActions.pop();
           if (!recentRedoAction) {
             console.error("recentRedoAction is undefined");
@@ -86,6 +87,7 @@ export function useMountUnmountKeybinds() {
         // Call the undoFunc and push to redo stack
         setUndoActions((prev) => {
           const updatedUndoActions = [...prev];
+          console.log("undo: ", [...updatedUndoActions]);
           const recentUndoAction = updatedUndoActions.pop();
           if (!recentUndoAction) {
             console.error("recentUndoAction is undefined");
