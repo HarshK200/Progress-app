@@ -1,4 +1,8 @@
-import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
+import {
+  onEnterFunc,
+  onEscapeFunc,
+  TextareaAutoresize,
+} from "@/components/ui/TextareaAutoresize";
 import { useList, useListCard, useSetListCards } from "@/store";
 import { Plus, SquarePen } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
@@ -351,6 +355,18 @@ export const ListCard = memo(
     }, [closestDroppableEdge, card, list]);
     // NOTE: the closestDroppableEdge, card and list are in the dependency array to prevent the closure issue
 
+    const onEnterListCard: onEnterFunc = ({ currentTitleState }) => {
+      // NOTE: update listcard's title in listcard map
+      setCard({ ...card, title: currentTitleState });
+
+      // NOTE: push new UserAction to undo stack
+
+      // NOTE: flush the redo stack
+    };
+    const onBlurListCard: onEscapeFunc = (state) => {
+      onEnterListCard(state);
+    };
+
     return (
       // List card wrapper
       <div className="py-[3px]" ref={listCardWrapperRef}>
@@ -382,9 +398,10 @@ export const ListCard = memo(
           {/* Input component */}
           <TextareaAutoresize
             title={card.title}
-            onChange={(e) => setCard({ ...card, title: e.target.value })}
+            onEnter={onEnterListCard}
+            onBlur={onBlurListCard}
             outlineOnClick={false}
-            className="ml-3 my-3 rounded-md overflow-hidden"
+            className="ml-3 my-3 rounded-sm overflow-hidden"
           />
 
           {/* ListCard Edit Trigger */}

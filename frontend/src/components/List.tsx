@@ -1,13 +1,21 @@
 import { cn } from "@/lib/utils";
-import { TextareaAutoresize } from "@/components/ui/TextareaAutoresize";
+import {
+  onBlurFunc,
+  onEnterFunc,
+  onEscapeFunc,
+  TextareaAutoresize,
+} from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
 import {
   useList,
   useListCardGroup,
+  UserAction,
   useSetListCards,
   useSetLists,
+  useSetRedoActions,
+  useSetUndoActions,
 } from "@/store";
-import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { AddNewCard } from "@/components/AddNewCard";
 import { main } from "@wailsjs/go/models";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -64,7 +72,6 @@ export const List = memo(({ list_id }: ListProps) => {
   const listRef = useRef<HTMLDivElement | null>(null);
   const cardsContainerRef = useRef<HTMLDivElement | null>(null);
   const addNewBtnRef = useRef<HTMLButtonElement | null>(null);
-  const [dragging, setDragging] = useState(false);
   const [listCardDragOver, setListCardDragOver] = useState(false);
   const [isDragAboutToStart, setDragIsAboutToStart] = useState(false);
   const listWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -94,10 +101,6 @@ export const List = memo(({ list_id }: ListProps) => {
         },
         onDragStart: () => {
           setDragIsAboutToStart(false);
-          setDragging(true);
-        },
-        onDrop: () => {
-          setDragging(false);
         },
       }),
 
@@ -397,13 +400,43 @@ export const List = memo(({ list_id }: ListProps) => {
     clientY: number;
   } | null>(null);
 
-  // TODO: Implement this undo-redo for list-rename
-  // implement by using [listTitle, setListTitle] = useState() for TextareaAutoresize value
-  // and [isEditingListTitle, setIsEditingListTitle] = useState<boolean>() with onKeyDown eventHandler (kinda like i did in board-rename in Sidebar.tsx)
-  function handleListTitleChange(e: ChangeEvent<HTMLTextAreaElement>) {
-    if (!list) return;
-    setList({ ...list, title: e.target.value });
-  }
+  const setUndoActions = useSetUndoActions();
+  const setRedoActions = useSetRedoActions();
+
+  // NOTE: list-rename UserAction
+  const onEnterListTitle: onEnterFunc = ({
+    currentTitleState,
+    setTextAreaValue,
+  }) => {
+    // NOTE: update list's title in listcard map
+    setList({ ...list, title: currentTitleState });
+
+    // NOTE: push new UserAction to undo stack
+    setUndoActions((prev) => {
+      const updatedUndoActions = [...prev];
+      const newUserAction: UserAction = {
+        type: "list-rename",
+
+        // undo
+        undoFunc: () => {
+          // reset
+        },
+
+        // redo
+        redoFunc: () => {},
+      };
+
+      updatedUndoActions.push(newUserAction);
+
+      return updatedUndoActions;
+    });
+
+    // NOTE: flush the redo stack
+    setRedoActions([]);
+  };
+  const onBlurListTitle: onBlurFunc = (state) => {
+    onEnterListTitle(state);
+  };
 
   return (
     // NOTE: List wrapper div
@@ -422,7 +455,8 @@ export const List = memo(({ list_id }: ListProps) => {
           <TextareaAutoresize
             title={list.title}
             outlineOnDoubleClick
-            onChange={handleListTitleChange}
+            onEnter={onEnterListTitle}
+            onBlur={onBlurListTitle}
             className={`font-bold mx-4`}
           />
 

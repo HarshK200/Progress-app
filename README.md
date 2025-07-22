@@ -56,13 +56,20 @@
   - [ ] list-rename
   - [ ] listcard-rename
 
+- [ ] Add Skeleton loading ui:
+  - [x] sidebar
+  - [ ] boards
+  - [ ] lists
+  - [ ] listcards
+
 - [ ] Implement custom checkbox
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards
-- [ ] Add Skeleton loading ui for board lists and listcards
 - [ ] Add colors to show the Priority/Urgency.
 - [ ] Polish up the edit-menu for list and list-cards both:
   - [ ] make it so that prev open one closes when goes out of focus
   - [ ] also upon clicking somewhere randomly also closes the edit-menu
   - [ ] Make a settings modal
 - [ ] Implement a filter system that orders the board-name listed on the sidebar
+- [ ] Eventually seperate create/delete board, list, listcard into there separate
+      functions (maybe even hooks?) for better modularity

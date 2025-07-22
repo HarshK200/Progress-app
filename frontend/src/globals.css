@@ -40,6 +40,7 @@ body {
   --border: 0, 0, 0;
   --background-secondary: 151, 151, 151;
   --drop-hint: 177, 156, 217;
+  --outline: 120,107,154;
 }
 
 .dark {
@@ -48,4 +49,5 @@ body {
   --border: 88, 88, 88;
   --background-secondary: 51, 51, 51;
   --drop-hint: 177, 156, 217;
+  --outline: 120,107,154;
 }

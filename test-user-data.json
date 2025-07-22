@@ -2,7 +2,7 @@
   "boards": {
     "251ab92d-ccff-4e74-ae4e-619ebb3b1752": {
       "id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
-      "name": "Programming Board",
+      "name": "Programming Boar",
       "list_ids": [
         "2",
         "3",
@@ -79,7 +79,7 @@
     },
     "9e626cd3-4daa-49f3-9483-6cd78426a25f": {
       "id": "9e626cd3-4daa-49f3-9483-6cd78426a25f",
-      "title": "Todo",
+      "title": "Todos",
       "classname": "",
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "card_ids": [
@@ -241,7 +241,7 @@
     },
     "d3c2d56d-d610-4252-baf2-e3c1b3f249d3": {
       "id": "d3c2d56d-d610-4252-baf2-e3c1b3f249d3",
-      "title": "Implemente custom list card",
+      "title": "Implement custom list card",
       "is_done": false,
       "board_id": "251ab92d-ccff-4e74-ae4e-619ebb3b1752",
       "list_id": "9e626cd3-4daa-49f3-9483-6cd78426a25f",

@@ -18,6 +18,7 @@ import { AddNewBoard } from "./AddNewBoard";
 import { SidebarContextMenu } from "./SideBarContextMenu";
 import { useEditingBoardIdAtom } from "@/store";
 import invariant from "tiny-invariant";
+import { SidebarSkeleton } from "./loading-skeleton/SidebarSkeleton";
 
 const Sidebar = () => {
   const [sidebarOpen, setSideBarOpen] = useSidebarOpen();
@@ -25,21 +26,9 @@ const Sidebar = () => {
   const boards = useBoardsValue();
   const contextMenuData = useContextMenuDataValue();
 
+  // Sidebar Skeleton UI
   if (!boards) {
-    return (
-      <div className="min-h-screen min-w-[303px] flex animate-pulse border-r-[1px] border-r-border">
-        <div className="bg-background z-10 min-h-screen w-min border-r-[1px] border-r-border px-3 py-3">
-          <PanelLeft size={22} className="cursor-pointer" />
-        </div>
-        <div className="flex h-fit w-full select-none bg-background py-3 px-2">
-          <SidebarGroup name="" classname="animate-pulse" fakeHover>
-            <div className="mx-2 mt-4 my-2 px-4 py-1 bg-background-secondary rounded-md"></div>
-            <div className="mx-2 my-2 px-4 py-1 bg-background-secondary rounded-md"></div>
-            <div className="mx-2 my-2 px-4 py-1 bg-background-secondary rounded-md"></div>
-          </SidebarGroup>
-        </div>
-      </div>
-    );
+    return <SidebarSkeleton />;
   }
 
   return (
@@ -85,7 +74,7 @@ interface SidebarGroupProps {
   children?: React.ReactNode;
   fakeHover?: boolean;
 }
-const SidebarGroup = ({
+export const SidebarGroup = ({
   name,
   children,
   classname,
@@ -152,85 +141,100 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
     });
   }
 
+  function handleOnEscape() {
+    // set the editingBoardName to null
+    setEditingBoardId(null);
+
+    // reset the input value to the first
+    setInputValue(board.name);
+  }
+
+  function handleOnEnter() {
+    // set the editingBoardName to null
+    setEditingBoardId(null);
+
+    // update the boards state
+    setBoards((prev) => {
+      if (!prev) return;
+
+      return {
+        ...prev,
+        [board.id]: { ...prev[board.id], name: inputValue },
+      };
+    });
+
+    // NOTE: push new user action to undo stack
+    setUndoActions((prev) => {
+      const updatedUndoActions = [...prev];
+      const newUserAction: UserAction = {
+        type: "board-rename",
+
+        // undo
+        undoFunc: () => {
+          // reset the boards map back to original
+          setBoards((prev) => {
+            if (!prev) return;
+            const updatedBoards = { ...prev };
+            updatedBoards[board.id] = {
+              ...updatedBoards[board.id],
+              name: board.name,
+            };
+
+            return updatedBoards;
+          });
+
+          // reset the inputValue back to original as well
+          setInputValue(board.name);
+        },
+
+        // redo
+        redoFunc: () => {
+          // update the board state back to last change
+          setBoards((prev) => {
+            if (!prev) return;
+
+            return {
+              ...prev,
+              [board.id]: { ...prev[board.id], name: inputValue },
+            };
+          });
+
+          // reset the inputValue state back to last change
+          setInputValue(inputValue);
+        },
+      };
+
+      updatedUndoActions.push(newUserAction);
+
+      return updatedUndoActions;
+    });
+
+    // NOTE: flush the redo stack
+    setRedoActions([]);
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     // NOTE: reset the inputValue when escape pressed
     if (e.key.toLowerCase() === "escape") {
-      // set the editingBoardName to null
-      setEditingBoardId(null);
-
-      // reset the input value to the first
-      setInputValue(board.name);
-
       // de-select the board name
+      ref.current?.setSelectionRange(0, 0);
       ref.current?.blur();
+
+      handleOnEscape();
     }
 
     if (e.key.toLowerCase() === "enter") {
-      // set the editingBoardName to null
-      setEditingBoardId(null);
-
-      // update the boards state
-      setBoards((prev) => {
-        if (!prev) return;
-
-        return {
-          ...prev,
-          [board.id]: { ...prev[board.id], name: inputValue },
-        };
-      });
-
       // de-select the board name
+      ref.current?.setSelectionRange(0, 0);
       ref.current?.blur();
 
-      // NOTE: push new user action to undo stack
-      setUndoActions((prev) => {
-        const updatedUndoActions = [...prev];
-        const newUserAction: UserAction = {
-          type: "board-rename",
-
-          // undo
-          undoFunc: () => {
-            // reset the board state back to original
-            setBoards((prev) => {
-              if (!prev) return;
-              const updatedBoards = { ...prev };
-              updatedBoards[board.id] = {
-                ...updatedBoards[board.id],
-                name: board.name,
-              };
-
-              return updatedBoards;
-            });
-
-            // reset the inputValue back to original as well
-            setInputValue(board.name);
-          },
-
-          // redo
-          redoFunc: () => {
-            // update the board state back to last change
-            setBoards((prev) => {
-              if (!prev) return;
-
-              return {
-                ...prev,
-                [board.id]: { ...prev[board.id], name: inputValue },
-              };
-            });
-
-            // reset the inputValue state back to last change
-            setInputValue(inputValue);
-          },
-        };
-
-        updatedUndoActions.push(newUserAction);
-
-        return updatedUndoActions;
-      });
-
-      // NOTE: flush the redo stack
-      setRedoActions([]);
+      handleOnEnter();
     }
+  }
+
+  function handleBlur() {
+    setEditingBoardId(null);
+    handleOnEnter();
   }
 
   return (
@@ -246,6 +250,7 @@ const SidebarBoardGroupItem = ({ board }: SidebarBoardGroupItemProps) => {
       readOnly={!(editingBoardId === board.id)}
       onKeyDown={handleKeyDown}
       ref={ref}
+      onBlur={handleBlur}
     />
   );
 };
