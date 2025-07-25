@@ -10,7 +10,10 @@ export interface UserAction {
     | "board-add-new"
     | "list-delete"
     | "listcard-delete"
-    | "board-delete";
+    | "board-delete"
+    | "list-reorder"
+    | "listcard-reorder"
+    | "listcard-to-empty-list-reorder";
   undoFunc: () => void;
   redoFunc: () => void;
 }

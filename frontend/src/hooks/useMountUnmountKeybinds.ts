@@ -43,6 +43,7 @@ export function useMountUnmountKeybinds() {
     function handleUndoRedo(e: KeyboardEvent) {
       // NOTE: redo
       if (e.shiftKey && e.ctrlKey && e.key.toLowerCase() === "z") {
+        debugger;
         if (redoActions.length <= 0) {
           toast("Already at the lastest change", {
             position: "bottom-right",

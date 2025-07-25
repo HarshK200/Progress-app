@@ -44,8 +44,7 @@
 - [x] Implement Right click opens context menu on board
   - [x] delete
   - [x] rename
-
-- [ ] Make it so every state change is an action Implement UserAction for State changes:
+- [x] Make it so every state change is an action Implement UserAction for State changes:
   - [x] board-add-new
   - [x] list-add-new
   - [x] listcard-add-new
@@ -55,16 +54,26 @@
   - [x] board-rename
   - [x] list-rename
   - [x] listcard-rename
-  - [ ] list-reorder
-  - [ ] listcard-reorder
-- [ ] BUG FIX: handleBlur() for board, list, listcard rename calls onEnterFunc which causes double push of newUserAction to the undo stack
+  - [x] list-reorder
+  - [x] listcard-reorder
+  - [x] listcard-to-empty-list-reorder
+- [x] BUG FIX: handleBlur() for board, list, listcard rename calls onEnterFunc which causes double push of newUserAction to the undo stack
+      REASON: this happens because useState(title) is preserved between re-renders and
+      since useState(title) sets intital value to title only Once it doesn't change when title changes
+- [x] BUG FIX: WHY THE HECK IS DROP BOTTOM HINT NOT SHOWING UP!!! and of-course the drop bottom doesn't work (FIXED i just had to remove the stupid overflow limit i put)
+- [x] BUG FIX: redo causes crashes
+      Steps to reproduce:
+  - drop one card into and empty list
+  - then drop another one after it (AT BOTTOM ONLY) NOTE: drop on top works fine
+  - undo both
+  - then redo both (on the second redo it crashes)
+    FIX: i was using a setList() instead of setLists() my-bad
 
 - [ ] Add Skeleton loading ui:
   - [x] sidebar
   - [ ] boards
   - [ ] lists
   - [ ] listcards
-
 - [ ] Implement custom checkbox
 - [ ] Implement the Ctrl+p quick search/command menu (i'm excited for this one)
 - [ ] Implement Ctrl+f for fuzzy find boards

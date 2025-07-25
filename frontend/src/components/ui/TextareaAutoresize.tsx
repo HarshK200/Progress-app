@@ -6,19 +6,16 @@ import invariant from "tiny-invariant";
 export type onEnterFunc = (state: {
   prevTitleState: string;
   currentTitleState: string;
-  setTextAreaValue: React.Dispatch<React.SetStateAction<string>>;
   textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }) => void;
 export type onEscapeFunc = (state: {
   prevTitleState: string;
   currentTitleState: string;
-  setTextAreaValue: React.Dispatch<React.SetStateAction<string>>;
   textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }) => void;
 export type onBlurFunc = (state: {
   prevTitleState: string;
   currentTitleState: string;
-  setTextAreaValue: React.Dispatch<React.SetStateAction<string>>;
   textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }) => void;
 
@@ -58,10 +55,8 @@ export const TextareaAutoresize = memo(
 
     // NOTE: this is for the BUG fix i.e. the textAreaValue doesn't update when i use setTextAreaValue outside of this function by passing to onEnterFunc
     useEffect(() => {
-      if (!isEditing) {
-        setTextAreaValue(title);
-      }
-    }, [title, isEditing]);
+      setTextAreaValue(title);
+    }, [title]);
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
       invariant(textAreaRef.current);
@@ -80,7 +75,6 @@ export const TextareaAutoresize = memo(
         onEscape?.({
           prevTitleState: title,
           currentTitleState: textAreaValue,
-          setTextAreaValue: setTextAreaValue,
           textAreaRef: textAreaRef,
         });
         return;
@@ -93,7 +87,6 @@ export const TextareaAutoresize = memo(
         onEnter?.({
           prevTitleState: title,
           currentTitleState: textAreaValue,
-          setTextAreaValue: setTextAreaValue,
           textAreaRef: textAreaRef,
         });
         return;
@@ -106,7 +99,6 @@ export const TextareaAutoresize = memo(
       onBlur?.({
         prevTitleState: title,
         currentTitleState: textAreaValue,
-        setTextAreaValue: setTextAreaValue,
         textAreaRef: textAreaRef,
       });
     }

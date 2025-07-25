@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import {
   onBlurFunc,
   onEnterFunc,
-  onEscapeFunc,
   TextareaAutoresize,
 } from "@/components/ui/TextareaAutoresize";
 import { ListCard } from "@/components/ListCard";
@@ -79,6 +78,8 @@ export const List = memo(({ list_id }: ListProps) => {
     "left" | "right" | null
   >(null);
   const setLists = useSetLists();
+  const setUndoActions = useSetUndoActions();
+  const setRedoActions = useSetRedoActions();
 
   useEffect(() => {
     const listElement = listRef.current;
@@ -128,50 +129,78 @@ export const List = memo(({ list_id }: ListProps) => {
           setListCardDragOver(false);
 
           const cardDragging = source.data.card as main.ListCard;
-          // card dragging list
-          const cardDraggingList = source.data.list as main.List;
-          const setCardDraggingList = source.data.setList as (
-            updatedList: main.List,
-          ) => void;
 
-          setCards((prev) => {
-            const updatedCards = { ...prev! };
-
-            // update the cards prev and next cards
-            if (cardDragging.prev_card_id)
-              updatedCards[cardDragging.prev_card_id] = {
-                ...updatedCards[cardDragging.prev_card_id],
-                next_card_id: cardDragging.next_card_id,
-              };
-            if (cardDragging.next_card_id)
-              updatedCards[cardDragging.next_card_id] = {
-                ...updatedCards[cardDragging.next_card_id],
-                prev_card_id: cardDragging.prev_card_id,
-              };
-
-            // update card dragging
-            updatedCards[cardDragging.id] = {
-              ...cardDragging,
-              prev_card_id: undefined,
-              next_card_id: undefined,
-              list_id: list_id,
+          // update the lists i.e. remove the card's id from prev list and add to this one
+          setLists((prevLists) => {
+            const updatedLists = { ...prevLists };
+            updatedLists[list.id] = {
+              ...updatedLists[list.id],
+              card_ids: [...updatedLists[list.id].card_ids, cardDragging.id],
+            };
+            updatedLists[cardDragging.list_id] = {
+              ...updatedLists[cardDragging.list_id],
+              card_ids: updatedLists[cardDragging.list_id].card_ids.filter(
+                (card_id) => card_id !== cardDragging.id,
+              ),
             };
 
-            // remove it from the previous list
-            setCardDraggingList({
-              ...cardDraggingList,
-              card_ids: cardDraggingList.card_ids.filter(
-                (id) => id !== cardDragging.id,
-              ),
-            });
+            setCards((prevCards) => {
+              const updatedCards = { ...prevCards! };
 
-            // add it to this list
-            setList({
-              ...list,
-              card_ids: [...list.card_ids, cardDragging.id],
-            });
+              // update the cards prev and next cards
+              if (cardDragging.prev_card_id)
+                updatedCards[cardDragging.prev_card_id] = {
+                  ...updatedCards[cardDragging.prev_card_id],
+                  next_card_id: cardDragging.next_card_id,
+                };
+              if (cardDragging.next_card_id)
+                updatedCards[cardDragging.next_card_id] = {
+                  ...updatedCards[cardDragging.next_card_id],
+                  prev_card_id: cardDragging.prev_card_id,
+                };
 
-            return updatedCards;
+              // update card dragging
+              updatedCards[cardDragging.id] = {
+                ...cardDragging,
+                prev_card_id: undefined,
+                next_card_id: undefined,
+                list_id: list_id,
+              };
+
+              // =========================== UNDO-Redo Func ===========================
+              const newUserAction: UserAction = {
+                type: "listcard-to-empty-list-reorder",
+                undoFunc: () => {
+                  setLists(() => {
+                    return { ...prevLists };
+                  });
+
+                  setCards(() => {
+                    return { ...prevCards };
+                  });
+                },
+                redoFunc: () => {
+                  setLists(() => {
+                    return { ...updatedLists };
+                  });
+
+                  setCards(() => {
+                    return { ...updatedCards };
+                  });
+                },
+              };
+              setUndoActions((prevUndoActions) => {
+                const updatedUndoActions = [...prevUndoActions];
+                updatedUndoActions.push(newUserAction);
+                return updatedUndoActions;
+              });
+
+              // NOTE: flush the redo stack
+              setRedoActions([]);
+
+              return updatedCards;
+            });
+            return updatedLists;
           });
         },
       }),
@@ -215,9 +244,16 @@ export const List = memo(({ list_id }: ListProps) => {
           // NOTE: Edge case: when the listDragging and list are the same
           if (closestDropEdge === null || listDragging.id === list.id) return;
 
-          setLists((prev) => {
-            if (!prev) return undefined;
-            const updatedLists = { ...prev };
+          setLists((prevLists) => {
+            if (!prevLists) return undefined;
+            const updatedLists = { ...prevLists };
+            const newUserAction: UserAction = {
+              type: "list-reorder",
+              undoFunc: () => {
+                setLists({ ...prevLists });
+              },
+              redoFunc: () => {},
+            };
 
             // for left drop
             if (closestDropEdge === "left") {
@@ -254,6 +290,17 @@ export const List = memo(({ list_id }: ListProps) => {
                     ...updatedLists[listDragging.next_list_id],
                     prev_list_id: list.id,
                   };
+
+                // NOTE: push newUserAction to undo stack (for swapping edge case LEFT)
+                setUndoActions((prevUndoActions) => {
+                  const updatedUndoActions = [...prevUndoActions];
+                  newUserAction.redoFunc = () => {
+                    setLists(updatedLists);
+                  };
+                  updatedUndoActions.push(newUserAction);
+
+                  return updatedUndoActions;
+                });
 
                 return updatedLists;
               }
@@ -331,6 +378,17 @@ export const List = memo(({ list_id }: ListProps) => {
                     prev_list_id: listDragging.id,
                   };
 
+                // NOTE: push newUserAction to undo stack (for swapping edge case RIGHT)
+                setUndoActions((prevUndoActions) => {
+                  const updatedUndoActions = [...prevUndoActions];
+                  newUserAction.redoFunc = () => {
+                    setLists(updatedLists);
+                  };
+                  updatedUndoActions.push(newUserAction);
+
+                  return updatedUndoActions;
+                });
+
                 return updatedLists;
               }
 
@@ -371,6 +429,17 @@ export const List = memo(({ list_id }: ListProps) => {
               };
             }
 
+            // NOTE: push newUserAction to undo stack (for LEFT OR RIGHT DROP)
+            setUndoActions((prevUndoActions) => {
+              const updatedUndoActions = [...prevUndoActions];
+              newUserAction.redoFunc = () => {
+                setLists(updatedLists);
+              };
+              updatedUndoActions.push(newUserAction);
+
+              return updatedUndoActions;
+            });
+
             return updatedLists;
           });
 
@@ -400,17 +469,16 @@ export const List = memo(({ list_id }: ListProps) => {
     clientY: number;
   } | null>(null);
 
-  const setUndoActions = useSetUndoActions();
-  const setRedoActions = useSetRedoActions();
   const isEnterPressed = useRef<boolean>(false);
 
   // NOTE: list-rename UserAction
   const onEnterListTitle: onEnterFunc = ({
     prevTitleState,
     currentTitleState,
-    setTextAreaValue,
     textAreaRef,
   }) => {
+    if (prevTitleState === currentTitleState) return;
+
     invariant(textAreaRef.current);
     isEnterPressed.current = true;
 
@@ -431,18 +499,12 @@ export const List = memo(({ list_id }: ListProps) => {
         undoFunc: () => {
           // reset the list's title state
           setList({ ...list, title: prevTitleState });
-
-          // reset the TextareaAutoresize's value as well
-          setTextAreaValue(prevTitleState);
         },
 
         // redo
         redoFunc: () => {
           // update the list's title state back to current
           setList({ ...list, title: currentTitleState });
-
-          // updated the TextareaAutoresize's value as well
-          setTextAreaValue(currentTitleState);
         },
       };
 

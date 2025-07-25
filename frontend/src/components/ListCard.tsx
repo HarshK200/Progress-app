@@ -8,6 +8,7 @@ import {
   useListCard,
   UserAction,
   useSetListCards,
+  useSetLists,
   useSetRedoActions,
   useSetUndoActions,
 } from "@/store";
@@ -56,6 +57,7 @@ export const ListCard = memo(
 
     // NOTE: drag-and-drop logic
     const [list, setList] = useList(card.list_id);
+    const setLists = useSetLists();
     const setCards = useSetListCards();
 
     const listCardRef = useRef<HTMLDivElement | null>(null);
@@ -65,6 +67,8 @@ export const ListCard = memo(
     const [closestDroppableEdge, setClosestDroppableEdge] = useState<
       "top" | "bottom" | null
     >(null);
+    const setUndoActions = useSetUndoActions();
+    const setRedoActions = useSetRedoActions();
 
     useEffect(() => {
       const elementWrapper = listCardWrapperRef.current;
@@ -83,7 +87,7 @@ export const ListCard = memo(
               setList,
             };
           },
-          onGenerateDragPreview({ nativeSetDragImage }) {
+          onGenerateDragPreview({}) {
             setDragIsAboutToStart(true);
           },
           onDragStart: () => {
@@ -95,6 +99,7 @@ export const ListCard = memo(
           },
         }),
 
+        // NOTE: drop logic for listcard on listcard
         dropTargetForElements({
           element: element,
 
@@ -111,214 +116,343 @@ export const ListCard = memo(
             // NOTE: Edge case: when the cardDragging and card are the same
             if (cardDragging.id === card.id) return;
 
-            // card dragging list
-            const cardDraggingList = source.data.list as main.List;
-            const setCardDraggingList = source.data.setList as (
-              updatedList: main.List,
-            ) => void;
-
+            if (!list) return;
             if (!closestDroppableEdge) return;
+            const newUserAction: UserAction = {
+              type: "listcard-reorder",
+              undoFunc: () => {},
+              redoFunc: () => {},
+            };
 
             // NOTE: attach card top-side
             if (closestDroppableEdge === "top") {
-              // add the card to current list
-              setList({
-                ...list!,
-                card_ids: [...list!.card_ids, cardDragging.id],
-              });
-
-              setCards((prev) => {
-                if (!prev) return undefined;
-                const updatedCards = { ...prev };
-
-                // NOTE: Edge case: when dropping card on the same position
-                if (card.prev_card_id === cardDragging.id) {
-                  return updatedCards;
+              // if moving card from one list to another (remove from prev and add to new)
+              // else do nothing
+              setLists((prevLists) => {
+                const updatedLists = {
+                  ...prevLists,
+                };
+                if (card.list_id !== cardDragging.list_id) {
+                  updatedLists[list.id] = {
+                    ...updatedLists[list.id],
+                    card_ids: [
+                      ...updatedLists[list.id].card_ids,
+                      cardDragging.id,
+                    ],
+                  };
+                  updatedLists[cardDragging.list_id] = {
+                    ...updatedLists[cardDragging.list_id],
+                    card_ids: updatedLists[
+                      cardDragging.list_id
+                    ].card_ids.filter((card_id) => card_id !== cardDragging.id),
+                  };
                 }
 
-                // NOTE: Edge case: when swapping two cards in the same list
-                if (
-                  cardDragging.prev_card_id === card.id ||
-                  cardDragging.next_card_id === card.id
-                ) {
-                  updatedCards[card.id] = {
-                    ...card,
-                    prev_card_id: cardDragging.id,
-                    next_card_id: cardDragging.next_card_id,
+                setCards((prevCards) => {
+                  if (!prevCards) return undefined;
+                  const updatedCards = { ...prevCards };
+
+                  // NOTE: Edge case: when dropping card on the same position
+                  if (card.prev_card_id === cardDragging.id) {
+                    return updatedCards;
+                  }
+
+                  // =========================== Undo Func (Common for top drop) ===========================
+                  newUserAction.undoFunc = () => {
+                    // reset the list
+                    setLists(() => {
+                      return { ...prevLists };
+                    });
+
+                    // reset the list cards
+                    setCards(() => {
+                      return { ...prevCards };
+                    });
                   };
-                  updatedCards[cardDragging.id] = {
-                    ...cardDragging,
-                    prev_card_id: card.prev_card_id,
-                    next_card_id: card.id,
-                  };
-                  if (card.prev_card_id)
+
+                  // NOTE: Edge case: when swapping two cards in the same list
+                  if (
+                    cardDragging.prev_card_id === card.id ||
+                    cardDragging.next_card_id === card.id
+                  ) {
+                    updatedCards[card.id] = {
+                      ...card,
+                      prev_card_id: cardDragging.id,
+                      next_card_id: cardDragging.next_card_id,
+                    };
+                    updatedCards[cardDragging.id] = {
+                      ...cardDragging,
+                      prev_card_id: card.prev_card_id,
+                      next_card_id: card.id,
+                    };
+                    if (card.prev_card_id)
+                      updatedCards[card.prev_card_id] = {
+                        ...updatedCards[card.prev_card_id],
+                        next_card_id: cardDragging.id,
+                      };
+                    if (cardDragging.next_card_id)
+                      updatedCards[cardDragging.next_card_id] = {
+                        ...updatedCards[cardDragging.next_card_id],
+                        prev_card_id: card.id,
+                      };
+
+                    // =========================== Redo Func (swapping edge case TOP) ===========================
+                    newUserAction.redoFunc = () => {
+                      // if moving card from one list to another (remove from prev and add to new)
+                      // else do nothing
+                      if (card.list_id !== cardDragging.list_id) {
+                        setLists(() => {
+                          return { ...updatedLists };
+                        });
+                      }
+
+                      // update the list cards
+                      setCards(() => {
+                        return { ...updatedCards };
+                      });
+                    };
+                    setUndoActions((prevUndoActions) => {
+                      const updatedUndoActions = [...prevUndoActions];
+                      updatedUndoActions.push(newUserAction);
+                      return updatedUndoActions;
+                    });
+                    // NOTE: flush the redo-stack
+                    setRedoActions([]);
+
+                    // NOTE: early return for edge case
+                    return updatedCards;
+                  }
+
+                  if (cardDragging.prev_card_id) {
+                    // =========== Dragging card updates ===============
+
+                    // dragging card's prev update
+                    updatedCards[cardDragging.prev_card_id] = {
+                      ...updatedCards[cardDragging.prev_card_id],
+                      next_card_id: cardDragging.next_card_id,
+                    };
+                  }
+                  // dragging card's next update
+                  if (cardDragging.next_card_id) {
+                    updatedCards[cardDragging.next_card_id] = {
+                      ...updatedCards[cardDragging.next_card_id],
+                      prev_card_id: cardDragging.prev_card_id,
+                    };
+                  }
+
+                  // =========== Dropping card updates ===============
+
+                  // card dropped-on's prev card update
+                  if (card.prev_card_id) {
                     updatedCards[card.prev_card_id] = {
                       ...updatedCards[card.prev_card_id],
                       next_card_id: cardDragging.id,
                     };
-                  if (cardDragging.next_card_id)
-                    updatedCards[cardDragging.next_card_id] = {
-                      ...updatedCards[cardDragging.next_card_id],
-                      prev_card_id: card.id,
-                    };
+                  }
 
-                  // NOTE: early return for edge case
+                  // card dropped-on update
+                  updatedCards[card.id] = {
+                    ...card,
+                    prev_card_id: cardDragging.id,
+                  };
+
+                  // dropping card update
+                  updatedCards[cardDragging.id] = {
+                    ...cardDragging,
+                    prev_card_id: card.prev_card_id,
+                    next_card_id: card.id,
+                    list_id: card.list_id,
+                  };
+
+                  // =========================== Redo Func (drop TOP) ===========================
+                  newUserAction.redoFunc = () => {
+                    // if moving card from one list to another (remove from prev and add to new)
+                    // else do nothing
+                    if (card.list_id !== cardDragging.list_id) {
+                      setLists(() => {
+                        return { ...updatedLists };
+                      });
+                    }
+
+                    // reset the list cards
+                    setCards(() => {
+                      return { ...updatedCards };
+                    });
+                  };
+                  setUndoActions((prevUndoActions) => {
+                    const updatedUndoActions = [...prevUndoActions];
+                    updatedUndoActions.push(newUserAction);
+                    return updatedUndoActions;
+                  });
+                  // NOTE: flush the redo-stack
+                  setRedoActions([]);
+
                   return updatedCards;
-                }
-
-                if (cardDragging.prev_card_id) {
-                  // =========== Dragging card updates ===============
-
-                  // dragging card's prev update
-                  updatedCards[cardDragging.prev_card_id] = {
-                    ...updatedCards[cardDragging.prev_card_id],
-                    next_card_id: cardDragging.next_card_id,
-                  };
-                }
-                // dragging card's next update
-                if (cardDragging.next_card_id) {
-                  updatedCards[cardDragging.next_card_id] = {
-                    ...updatedCards[cardDragging.next_card_id],
-                    prev_card_id: cardDragging.prev_card_id,
-                  };
-                }
-
-                // ================= Lists updates ===============
-
-                // dragging list update
-                setCardDraggingList({
-                  ...cardDraggingList,
-                  card_ids: cardDraggingList.card_ids.filter(
-                    (id) => id !== cardDragging.id,
-                  ),
                 });
 
-                // dropping list update
-                setList({
-                  ...list!,
-                  card_ids: [...list!.card_ids, cardDragging.id],
-                });
-
-                // =========== Dropping card updates ===============
-
-                // card dropped-on's prev card update
-                if (card.prev_card_id) {
-                  updatedCards[card.prev_card_id] = {
-                    ...updatedCards[card.prev_card_id],
-                    next_card_id: cardDragging.id,
-                  };
-                }
-
-                // card dropped-on update
-                updatedCards[card.id] = {
-                  ...card,
-                  prev_card_id: cardDragging.id,
-                };
-
-                // dropping card update
-                updatedCards[cardDragging.id] = {
-                  ...cardDragging,
-                  prev_card_id: card.prev_card_id,
-                  next_card_id: card.id,
-                  list_id: card.list_id,
-                };
-
-                return updatedCards;
+                return updatedLists;
               });
             }
 
             // attach card bottom-side
-            // WARN: i got lazy so this code is by chatgpt WARNING! this may contain bugs
             else if (closestDroppableEdge === "bottom") {
-              setList({
-                ...list!,
-                card_ids: [...list!.card_ids, cardDragging.id],
-              });
-
-              setCards((prev) => {
-                const updatedCards = { ...prev! };
-
-                // NOTE: Edge case when card dropping is in the same position
-                if (
-                  card.next_card_id === cardDragging.id ||
-                  card.id === cardDragging.id
-                ) {
-                  return updatedCards;
+              // if moving card from one list to another (remove from prev and add to new)
+              // else do nothing
+              setLists((prevLists) => {
+                const updatedLists = {
+                  ...prevLists,
+                };
+                if (card.list_id !== cardDragging.list_id) {
+                  updatedLists[list.id] = {
+                    ...updatedLists[list.id],
+                    card_ids: [
+                      ...updatedLists[list.id].card_ids,
+                      cardDragging.id,
+                    ],
+                  };
+                  updatedLists[cardDragging.list_id] = {
+                    ...updatedLists[cardDragging.list_id],
+                    card_ids: updatedLists[
+                      cardDragging.list_id
+                    ].card_ids.filter((card_id) => card_id !== cardDragging.id),
+                  };
                 }
 
-                // NOTE: swap edge case
-                if (
-                  cardDragging.prev_card_id === card.id ||
-                  cardDragging.next_card_id === card.id
-                ) {
-                  updatedCards[card.id] = {
-                    ...card,
-                    next_card_id: cardDragging.id,
-                    prev_card_id: cardDragging.prev_card_id,
+                setCards((prevCards) => {
+                  const updatedCards = { ...prevCards! };
+
+                  // NOTE: Edge case when card dropping is in the same position
+                  if (
+                    card.next_card_id === cardDragging.id ||
+                    card.id === cardDragging.id
+                  ) {
+                    return updatedCards;
+                  }
+
+                  // =========================== Undo Func (Common for top drop) ===========================
+                  newUserAction.undoFunc = () => {
+                    // reset the list
+                    setLists(() => {
+                      return { ...prevLists };
+                    });
+
+                    // reset the list cards
+                    setCards(() => {
+                      return { ...prevCards };
+                    });
                   };
-                  updatedCards[cardDragging.id] = {
-                    ...cardDragging,
-                    next_card_id: card.next_card_id,
-                    prev_card_id: card.id,
-                  };
-                  if (card.next_card_id)
+
+                  // NOTE: swap edge case
+                  if (
+                    cardDragging.prev_card_id === card.id ||
+                    cardDragging.next_card_id === card.id
+                  ) {
+                    updatedCards[card.id] = {
+                      ...card,
+                      next_card_id: cardDragging.id,
+                      prev_card_id: cardDragging.prev_card_id,
+                    };
+                    updatedCards[cardDragging.id] = {
+                      ...cardDragging,
+                      next_card_id: card.next_card_id,
+                      prev_card_id: card.id,
+                    };
+                    if (card.next_card_id)
+                      updatedCards[card.next_card_id] = {
+                        ...updatedCards[card.next_card_id],
+                        prev_card_id: cardDragging.id,
+                      };
+                    if (cardDragging.prev_card_id)
+                      updatedCards[cardDragging.prev_card_id] = {
+                        ...updatedCards[cardDragging.prev_card_id],
+                        next_card_id: card.id,
+                      };
+
+                    // =========================== Redo Func (swapping edge case BOTTOM) ===========================
+                    newUserAction.redoFunc = () => {
+                      // push the cardDragging's id to list's card_ids again
+                      if (card.list_id !== cardDragging.list_id) {
+                        setLists(() => {
+                          return { ...updatedLists };
+                        });
+                      }
+
+                      // update the list cards
+                      setCards(() => {
+                        return { ...updatedCards };
+                      });
+                    };
+                    setUndoActions((prevUndoActions) => {
+                      const updatedUndoActions = [...prevUndoActions];
+                      updatedUndoActions.push(newUserAction);
+                      return updatedUndoActions;
+                    });
+                    // NOTE: flush the redo-stack
+                    setRedoActions([]);
+
+                    return updatedCards;
+                  }
+
+                  // =========== Dragging card updates ===============
+
+                  if (cardDragging.prev_card_id) {
+                    updatedCards[cardDragging.prev_card_id] = {
+                      ...updatedCards[cardDragging.prev_card_id],
+                      next_card_id: cardDragging.next_card_id,
+                    };
+                  }
+                  if (cardDragging.next_card_id) {
+                    updatedCards[cardDragging.next_card_id] = {
+                      ...updatedCards[cardDragging.next_card_id],
+                      prev_card_id: cardDragging.prev_card_id,
+                    };
+                  }
+
+                  // =========== Dropping card updates ===============
+
+                  if (card.next_card_id) {
                     updatedCards[card.next_card_id] = {
                       ...updatedCards[card.next_card_id],
                       prev_card_id: cardDragging.id,
                     };
-                  if (cardDragging.prev_card_id)
-                    updatedCards[cardDragging.prev_card_id] = {
-                      ...updatedCards[cardDragging.prev_card_id],
-                      next_card_id: card.id,
-                    };
+                  }
+
+                  updatedCards[cardDragging.id] = {
+                    ...cardDragging,
+                    prev_card_id: card.id,
+                    next_card_id: card.next_card_id,
+                    list_id: card.list_id,
+                  };
+
+                  updatedCards[card.id] = {
+                    ...card,
+                    next_card_id: cardDragging.id,
+                  };
+
+                  // =========================== Redo Func (drop BOTTOM) ===========================
+                  newUserAction.redoFunc = () => {
+                    // push the cardDragging's id to list's card_ids again
+                    if (card.list_id !== cardDragging.list_id)
+                      setLists(() => {
+                        return { ...updatedLists };
+                      });
+
+                    // update the list cards
+                    setCards(() => {
+                      return { ...updatedCards };
+                    });
+                  };
+                  setUndoActions((prevUndoActions) => {
+                    const updatedUndoActions = [...prevUndoActions];
+                    updatedUndoActions.push(newUserAction);
+                    return updatedUndoActions;
+                  });
+                  // NOTE: flush the redo-stack
+                  setRedoActions([]);
+
                   return updatedCards;
-                }
-
-                if (cardDragging.prev_card_id) {
-                  updatedCards[cardDragging.prev_card_id] = {
-                    ...updatedCards[cardDragging.prev_card_id],
-                    next_card_id: cardDragging.next_card_id,
-                  };
-                }
-                if (cardDragging.next_card_id) {
-                  updatedCards[cardDragging.next_card_id] = {
-                    ...updatedCards[cardDragging.next_card_id],
-                    prev_card_id: cardDragging.prev_card_id,
-                  };
-                }
-
-                setCardDraggingList({
-                  ...cardDraggingList,
-                  card_ids: cardDraggingList.card_ids.filter(
-                    (id) => id !== cardDragging.id,
-                  ),
                 });
-
-                setList({
-                  ...list!,
-                  card_ids: [...list!.card_ids, cardDragging.id],
-                });
-
-                if (card.next_card_id) {
-                  updatedCards[card.next_card_id] = {
-                    ...updatedCards[card.next_card_id],
-                    prev_card_id: cardDragging.id,
-                  };
-                }
-
-                updatedCards[cardDragging.id] = {
-                  ...cardDragging,
-                  prev_card_id: card.id,
-                  next_card_id: card.next_card_id,
-                  list_id: card.list_id,
-                };
-
-                updatedCards[card.id] = {
-                  ...card,
-                  next_card_id: cardDragging.id,
-                };
-
-                return updatedCards;
+                return updatedLists;
               });
             }
 
@@ -349,7 +483,9 @@ export const ListCard = memo(
 
             if (percentageFromTop > 50 && percentageFromTop <= 100) {
               setClosestDroppableEdge("bottom");
-            } else if (percentageFromTop >= 0 && percentageFromTop <= 50) {
+            }
+
+            if (percentageFromTop >= 0 && percentageFromTop <= 50) {
               setClosestDroppableEdge("top");
             }
           },
@@ -357,21 +493,24 @@ export const ListCard = memo(
           onDragLeave: () => {
             setClosestDroppableEdge(null);
           },
+
+          onDrop: () => {
+            setClosestDroppableEdge(null);
+          },
         }),
       );
     }, [closestDroppableEdge, card, list]);
     // NOTE: the closestDroppableEdge, card and list are in the dependency array to prevent the closure issue
 
-    const setUndoActions = useSetUndoActions();
-    const setRedoActions = useSetRedoActions();
     const isEnterPressed = useRef<boolean>(false);
 
     const onEnterListCard: onEnterFunc = ({
       prevTitleState,
       currentTitleState,
-      setTextAreaValue,
       textAreaRef,
     }) => {
+      if (prevTitleState === currentTitleState) return;
+
       invariant(textAreaRef.current);
       isEnterPressed.current = true;
       // NOTE:de-select the text
@@ -391,18 +530,12 @@ export const ListCard = memo(
           undoFunc: () => {
             // reset the listcard's title state
             setCard({ ...card, title: prevTitleState });
-
-            // reset the TextareaAutoresize's value as well
-            setTextAreaValue(prevTitleState);
           },
 
           // redo
           redoFunc: () => {
             // update the listcard's title state back to current
             setCard({ ...card, title: currentTitleState });
-
-            // updated the TextareaAutoresize's value as well
-            setTextAreaValue(currentTitleState);
           },
         };
 
@@ -433,6 +566,12 @@ export const ListCard = memo(
           {/* Dropable Area Hint Top */}
           <div
             className={`z-10 absolute w-full h-[2px] bg-drop-hint ${closestDroppableEdge === "top" ? "opacity-100" : "opacity-0"} -top-1`}
+            onDrag={() => {
+              console.log("i'm dragged over");
+            }}
+            onDrop={() => {
+              console.log("dropped on hint");
+            }}
           >
             <Plus
               size={14}
